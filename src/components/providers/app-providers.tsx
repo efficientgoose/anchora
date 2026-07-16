@@ -2,17 +2,19 @@
 
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AlertCircle, CheckCircle2, X } from "lucide-react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
 
-interface Notice { id: number; kind: "info" | "error"; message: string }
+interface DataNotice { id: number; kind: "info" | "error"; message: string }
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient({ defaultOptions: { queries: { staleTime: 15_000, refetchOnWindowFocus: false }, mutations: { retry: false } } }));
-  const [notice, setNotice] = React.useState<Notice | null>(null);
+  const [notice, setNotice] = React.useState<DataNotice | null>(null);
 
   React.useEffect(() => {
     const handle = (event: Event) => {
-      const detail = (event as CustomEvent<Omit<Notice, "id">>).detail;
+      const detail = (event as CustomEvent<Omit<DataNotice, "id">>).detail;
       setNotice({ ...detail, id: Date.now() });
     };
     window.addEventListener("anchora:data-notice", handle);
@@ -29,10 +31,13 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {children}
       {notice && (
-        <div role="status" className="fixed bottom-5 right-5 z-[200] flex max-w-sm items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-[0_16px_40px_-12px_rgba(15,23,42,.28)]">
-          {notice.kind === "error" ? <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600" /> : <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-green-600" />}
-          <span className="leading-5">{notice.message}</span>
-          <button onClick={() => setNotice(null)} className="rounded p-0.5 text-slate-400 hover:bg-slate-100" aria-label="Dismiss message"><X className="size-3.5" /></button>
+        <div className="fixed inset-x-4 bottom-4 z-[200] ml-auto max-w-sm sm:inset-x-auto sm:bottom-5 sm:right-5">
+          <Notice tone={notice.kind === "error" ? "danger" : "info"} role={notice.kind === "error" ? "alert" : "status"} className="items-center bg-surface shadow-overlay">
+            <span className="flex items-center gap-2">
+              <span className="min-w-0 flex-1">{notice.message}</span>
+              <Button type="button" variant="ghost" size="icon-sm" className="-mr-2" onClick={() => setNotice(null)} aria-label="Dismiss message"><X /></Button>
+            </span>
+          </Notice>
         </div>
       )}
     </QueryClientProvider>

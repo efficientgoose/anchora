@@ -5,5 +5,5 @@ import { StudentListPage } from "@/features/students/student-list-page";
 export const metadata: Metadata = { title: "Students" };
 
 export default function Page() {
-  return <Suspense fallback={<div className="p-8 text-sm text-slate-400">Loading students…</div>}><StudentListPage /></Suspense>;
+  return <Suspense fallback={<div role="status" className="p-8 text-sm text-text-muted">Loading students…</div>}><StudentListPage /></Suspense>;
 }

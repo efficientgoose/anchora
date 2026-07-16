@@ -4,24 +4,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border text-sm font-medium transition-colors duration-200 outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-control border font-medium outline-none transition-colors [transition-duration:var(--motion-fast)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/35 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "border-brand-charcoal bg-brand-charcoal text-white shadow-[0_1px_2px_rgba(24,24,27,.1)] hover:border-zinc-700 hover:bg-zinc-700",
-        secondary: "border-slate-200 bg-white text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,.04)] hover:border-slate-300 hover:bg-slate-50",
-        ghost: "border-transparent bg-transparent text-slate-600 hover:bg-slate-100 hover:text-brand-charcoal",
-        outline: "border-slate-200 bg-white text-slate-700 hover:border-brand-charcoal/20 hover:bg-brand-gold/10 hover:text-brand-charcoal",
-        danger: "border-red-600 bg-red-600 text-white hover:bg-red-700",
+        primary: "border-brand-ink bg-brand-ink text-text-inverse shadow-subtle hover:border-text-secondary hover:bg-text-secondary",
+        secondary: "border-border-default bg-surface text-text-secondary shadow-subtle hover:border-border-strong hover:bg-surface-muted hover:text-text-primary",
+        outline: "border-border-strong bg-transparent text-text-primary hover:border-brand-ink hover:bg-accent-soft",
+        ghost: "border-transparent bg-transparent text-text-secondary hover:bg-surface-muted hover:text-text-primary",
+        destructive: "border-status-danger bg-status-danger text-text-inverse shadow-subtle hover:border-brand-red hover:bg-brand-red",
       },
       size: {
-        default: "h-[38px] px-4",
-        sm: "h-8 rounded-md px-3 text-[13px]",
-        lg: "h-[46px] rounded-[10px] px-[22px] text-[15px]",
-        icon: "size-[38px] px-0",
+        sm: "h-8 px-3 text-[13px] leading-5 [&_svg]:size-4",
+        md: "h-10 px-4 text-sm leading-[22px] [&_svg]:size-4",
+        lg: "h-12 px-5 text-[15px] leading-6 [&_svg]:size-[18px]",
+        "icon-sm": "size-8 px-0 [&_svg]:size-4",
+        "icon-md": "size-10 px-0 [&_svg]:size-5",
       },
     },
-    defaultVariants: { variant: "default", size: "default" },
+    defaultVariants: { variant: "primary", size: "md" },
   },
 );
 

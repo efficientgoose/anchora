@@ -2,26 +2,31 @@
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronDown } from "lucide-react";
+import { taskStatusVisuals } from "@/components/ui/status-badge";
 import type { TaskStatus } from "@/domain/models";
 import { cn } from "@/lib/cn";
-import { statusMeta } from "./risk-ui";
 
 const order: TaskStatus[] = ["not_started", "in_progress", "blocked", "done"];
 
 export function TaskStatusMenu({ value, onChange, disabled }: { value: TaskStatus; onChange: (value: TaskStatus) => void; disabled?: boolean }) {
-  const current = statusMeta[value];
+  const current = taskStatusVisuals[value];
+  const CurrentIcon = current.icon;
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger disabled={disabled} className={cn("inline-flex h-6 items-center gap-1 rounded-md border px-1.5 text-[11px] font-medium leading-none outline-none transition focus:ring-[3px] focus:ring-brand-gold/25 disabled:opacity-60", current.bg, current.text, current.border)}>
-        <span className={cn("size-1 rounded-full", current.dot)} />{current.label}<ChevronDown className="size-2" />
+      <DropdownMenu.Trigger disabled={disabled} className={cn("inline-flex min-h-8 items-center gap-1.5 rounded-sm border px-2 text-xs font-semibold leading-4 outline-none transition [transition-duration:var(--motion-fast)] focus-visible:ring-[3px] focus-visible:ring-brand-gold/30 disabled:opacity-60", current.softClass, current.textClass, current.borderClass)}>
+        <CurrentIcon aria-hidden="true" className="size-3.5" />{current.label}<ChevronDown aria-hidden="true" className="size-3" />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content align="end" sideOffset={5} className="z-[100] min-w-[162px] rounded-[10px] border border-slate-200 bg-white p-1.5 shadow-[0_10px_30px_-8px_rgba(15,23,42,.22)]">
-          {order.map((status) => { const meta = statusMeta[status]; return (
-            <DropdownMenu.Item key={status} onSelect={() => onChange(status)} className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] text-slate-700 outline-none data-[highlighted]:bg-slate-100">
-              <span className={cn("size-2 rounded-full", meta.dot)} />{meta.label}<span className="flex-1" />{value === status && <Check className="size-3.5 text-brand-charcoal" />}
-            </DropdownMenu.Item>
-          ); })}
+        <DropdownMenu.Content align="end" sideOffset={6} collisionPadding={12} className="z-[100] min-w-[172px] rounded-sm border border-border-default bg-surface p-1.5 text-text-secondary shadow-popover">
+          {order.map((status) => {
+            const visual = taskStatusVisuals[status];
+            const Icon = visual.icon;
+            return (
+              <DropdownMenu.Item key={status} onSelect={() => onChange(status)} className="flex min-h-9 cursor-pointer items-center gap-2.5 rounded-sm px-2.5 py-2 text-[13px] font-medium outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-text-primary">
+                <Icon aria-hidden="true" className={cn("size-4", visual.textClass)} />{visual.label}<span className="flex-1" />{value === status && <Check aria-label="Current status" className="size-4 text-brand-ink" />}
+              </DropdownMenu.Item>
+            );
+          })}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
