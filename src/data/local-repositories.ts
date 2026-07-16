@@ -81,8 +81,9 @@ class LocalRepository implements StudentRepository, IntakeRepository {
     return { items: students.slice(offset, offset + query.pageSize), total, page, pageSize: query.pageSize, pageCount };
   }
 
-  async listAll(scope: TenantScope) {
-    return [...this.scoped(scope)];
+  async getOverview(scope: TenantScope) {
+    const students = this.scoped(scope);
+    return { total: students.length, counts: countRisks(students, demoClock) };
   }
 
   async getById(scope: TenantScope, studentId: string) {

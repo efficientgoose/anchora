@@ -52,7 +52,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent><SidebarContent /></SheetContent></Sheet>
           <BrandMark href="/students" compact />
         </header>
-        <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">{children}</main>
       </div>
     </div>
   );

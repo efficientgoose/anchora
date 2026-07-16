@@ -10,8 +10,8 @@ export function useStudents(query: StudentQuery) {
   return useQuery({ queryKey: queryKeys.students(DEMO_SCOPE.organizationId, query), queryFn: () => repositories.students.list(DEMO_SCOPE, query) });
 }
 
-export function useAllStudents() {
-  return useQuery({ queryKey: queryKeys.allStudents(DEMO_SCOPE.organizationId), queryFn: () => repositories.students.listAll(DEMO_SCOPE) });
+export function useStudentOverview() {
+  return useQuery({ queryKey: queryKeys.studentOverview(DEMO_SCOPE.organizationId), queryFn: () => repositories.students.getOverview(DEMO_SCOPE) });
 }
 
 export function useStudent(studentId: string) {
@@ -23,7 +23,7 @@ function useInvalidateStudentData() {
   return async (studentId?: string) => {
     await Promise.all([
       client.invalidateQueries({ queryKey: ["students"] }),
-      client.invalidateQueries({ queryKey: ["students-all"] }),
+      client.invalidateQueries({ queryKey: ["student-overview"] }),
       client.invalidateQueries({ queryKey: ["intakes"] }),
       ...(studentId ? [client.invalidateQueries({ queryKey: queryKeys.student(DEMO_SCOPE.organizationId, studentId) })] : []),
     ]);

@@ -5,7 +5,7 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export interface SelectOption { value: string; label: string }
+export interface SelectOption { value: string; label: string; shortLabel?: string }
 
 export function Select({ value, onValueChange, options, placeholder, className, ariaLabel }: {
   value?: string;
@@ -15,10 +15,13 @@ export function Select({ value, onValueChange, options, placeholder, className, 
   className?: string;
   ariaLabel: string;
 }) {
+  const selected = options.find((option) => option.value === value);
   return (
     <SelectPrimitive.Root value={value} onValueChange={onValueChange}>
-      <SelectPrimitive.Trigger aria-label={ariaLabel} className={cn("flex h-[38px] w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-indigo-600 focus:ring-[3px] focus:ring-indigo-500/10 data-[placeholder]:text-slate-400", className)}>
-        <SelectPrimitive.Value placeholder={placeholder} />
+      <SelectPrimitive.Trigger aria-label={ariaLabel} className={cn("flex h-[38px] min-w-0 w-full items-center justify-between gap-2 overflow-hidden rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-indigo-600 focus:ring-[3px] focus:ring-indigo-500/10 data-[placeholder]:text-slate-400", className)}>
+        <span className="min-w-0 flex-1 truncate text-left">
+          {selected ? <><span className={selected.shortLabel ? "hidden sm:inline" : undefined}>{selected.label}</span>{selected.shortLabel && <span className="sm:hidden">{selected.shortLabel}</span>}</> : placeholder}
+        </span>
         <SelectPrimitive.Icon><ChevronDown className="size-3.5 text-slate-400" /></SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>

@@ -70,6 +70,11 @@ export interface RiskCounts {
   onTrack: number;
 }
 
+export interface StudentOverview {
+  total: number;
+  counts: RiskCounts;
+}
+
 export interface IntakeGroup {
   intake: string;
   counts: RiskCounts;
