@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-brand-charcoal: var(--brand-charcoal);
+  --color-brand-red: var(--brand-red);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-white: var(--brand-white);
+}
+
 @font-face {
   font-family: "Anchora Inter";
   src: url("/fonts/Inter-Regular.ttf") format("truetype");
@@ -33,15 +40,19 @@
 }
 
 :root {
-  --brand: #4f46e5;
-  --brand-hover: #4338ca;
+  --brand-charcoal: #18181b;
+  --brand-red: #d32f2f;
+  --brand-gold: #eab308;
+  --brand-white: #ffffff;
+  --brand: var(--brand-charcoal);
+  --brand-hover: #27272a;
   --canvas: #f8fafc;
-  --text: #0f172a;
+  --text: var(--brand-charcoal);
   --muted: #64748b;
   --subtle: #94a3b8;
   --border: #e2e8f0;
   --divider: #f1f5f9;
-  --danger: #dc2626;
+  --danger: var(--brand-red);
   --warning: #f59e0b;
   --success: #16a34a;
 }
@@ -58,13 +69,15 @@ body {
 }
 button, input, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
-::selection { background: #c7d2fe; color: #312e81; }
+:is(a[href], button, select, summary, [role="button"], input[type="checkbox"], input[type="radio"], label[for]) { cursor: pointer; }
+:is(button, select, input):disabled, [role="button"][aria-disabled="true"], a[aria-disabled="true"] { cursor: not-allowed; }
+::selection { background: rgb(234 179 8 / 0.32); color: var(--brand-charcoal); }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: #e2e8f0; border: 2px solid #f8fafc; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 ::-webkit-scrollbar-track { background: transparent; }
 
-.focus-ring:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(79 70 229 / 0.14); }
+.focus-ring:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(234 179 8 / 0.28); }
 .page-enter { animation: pageEnter .35s cubic-bezier(.2,.75,.25,1) both; }
 
 @keyframes pageEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }

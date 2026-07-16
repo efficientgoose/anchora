@@ -9,7 +9,7 @@ export const riskMeta: Record<RiskLevel, { label: string; dot: string; text: str
 
 export const statusMeta: Record<TaskStatus, { label: string; dot: string; text: string; bg: string; border: string }> = {
   not_started: { label: "Not Started", dot: "bg-slate-400", text: "text-slate-600", bg: "bg-slate-50", border: "border-slate-200" },
-  in_progress: { label: "In Progress", dot: "bg-indigo-600", text: "text-indigo-700", bg: "bg-indigo-50", border: "border-indigo-200" },
+  in_progress: { label: "In Progress", dot: "bg-brand-charcoal", text: "text-brand-charcoal", bg: "bg-brand-gold/15", border: "border-brand-gold/40" },
   blocked: { label: "Blocked", dot: "bg-red-600", text: "text-red-700", bg: "bg-red-50", border: "border-red-200" },
   done: { label: "Done", dot: "bg-green-600", text: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
 };

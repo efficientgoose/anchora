@@ -18,7 +18,7 @@ export function Select({ value, onValueChange, options, placeholder, className, 
   const selected = options.find((option) => option.value === value);
   return (
     <SelectPrimitive.Root value={value} onValueChange={onValueChange}>
-      <SelectPrimitive.Trigger aria-label={ariaLabel} className={cn("flex h-[38px] min-w-0 w-full items-center justify-between gap-2 overflow-hidden rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-indigo-600 focus:ring-[3px] focus:ring-indigo-500/10 data-[placeholder]:text-slate-400", className)}>
+      <SelectPrimitive.Trigger aria-label={ariaLabel} className={cn("flex h-[38px] min-w-0 w-full items-center justify-between gap-2 overflow-hidden rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-brand-charcoal focus:ring-[3px] focus:ring-brand-gold/25 data-[placeholder]:text-slate-400", className)}>
         <span className="min-w-0 flex-1 truncate text-left">
           {selected ? <><span className={selected.shortLabel ? "hidden sm:inline" : undefined}>{selected.label}</span>{selected.shortLabel && <span className="sm:hidden">{selected.shortLabel}</span>}</> : placeholder}
         </span>
@@ -30,7 +30,7 @@ export function Select({ value, onValueChange, options, placeholder, className, 
             {options.map((option) => (
               <SelectPrimitive.Item key={option.value} value={option.value} className="relative flex h-8 cursor-pointer select-none items-center rounded-md px-2.5 pr-8 text-[13px] text-slate-700 outline-none data-[highlighted]:bg-slate-100">
                 <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
-                <SelectPrimitive.ItemIndicator className="absolute right-2"><Check className="size-3.5 text-indigo-600" /></SelectPrimitive.ItemIndicator>
+                <SelectPrimitive.ItemIndicator className="absolute right-2"><Check className="size-3.5 text-brand-charcoal" /></SelectPrimitive.ItemIndicator>
               </SelectPrimitive.Item>
             ))}
           </SelectPrimitive.Viewport>

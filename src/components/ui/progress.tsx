@@ -9,7 +9,7 @@ export function Progress({ value, className, indicatorClassName }: { value: numb
       aria-valuenow={Math.max(0, Math.min(100, value))}
       className={cn("h-1.5 overflow-hidden rounded-full bg-slate-100", className)}
     >
-      <div className={cn("h-full rounded-full bg-indigo-600 transition-[width] duration-300", indicatorClassName)} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
+      <div className={cn("h-full rounded-full bg-brand-charcoal/65 transition-[width] duration-300", indicatorClassName)} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
     </div>
   );
 }

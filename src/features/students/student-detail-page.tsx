@@ -20,7 +20,7 @@ function TaskRow({ task, onStatus, pending }: { task: ApplicationTask; onStatus:
   return (
     <div className="grid gap-3 border-b border-slate-100 px-5 py-3.5 last:border-b-0 sm:grid-cols-[18px_minmax(130px,1fr)_160px_150px] sm:items-center sm:gap-4 sm:px-6">
       <span className={cn("hidden size-[9px] rounded-full sm:block", complete ? "bg-green-600" : riskStyle.dot)} />
-      <div className="flex min-w-0 items-center gap-2 sm:block"><span className={cn("size-2 rounded-full sm:hidden", complete ? "bg-green-600" : riskStyle.dot)} /><span className={cn("text-sm font-medium", complete ? "text-slate-400 line-through" : "text-slate-900")}>{task.name}</span></div>
+      <div className="flex min-w-0 items-center gap-2 sm:block"><span className={cn("size-2 rounded-full sm:hidden", complete ? "bg-green-600" : riskStyle.dot)} /><span className={cn("text-sm font-medium", complete ? "text-slate-400 line-through" : "text-brand-charcoal")}>{task.name}</span></div>
       <div><div className={cn("text-[13px] font-medium", complete ? "text-slate-400" : "text-slate-700")}>{formatDate(task.dueDate)}</div><div className={cn("text-xs", complete ? "text-slate-400" : risk === "overdue" ? "font-semibold text-red-700" : risk === "at_risk" ? "text-amber-700" : "text-slate-400")}>{complete ? "Completed" : relativeDateLabel(task.dueDate, demoClock)}</div></div>
       <div className="sm:text-right"><TaskStatusMenu value={task.status} onChange={onStatus} disabled={pending} /></div>
     </div>
@@ -45,7 +45,7 @@ export function StudentDetailPage({ studentId }: { studentId: string }) {
   const update = (taskId: string, status: TaskStatus) => mutation.mutate({ taskId, status });
   return (
     <div className="mx-auto max-w-[1100px] space-y-5 p-4 sm:p-6 lg:p-8 page-enter">
-      <nav className="flex items-center gap-2 text-[13px] text-slate-400" aria-label="Breadcrumb"><Link href="/students" className="text-slate-500 hover:text-indigo-600">Students</Link><span>/</span><span className="font-medium text-slate-700">{student.name}</span></nav>
+      <nav className="flex items-center gap-2 text-[13px] text-slate-400" aria-label="Breadcrumb"><Link href="/students" className="text-slate-500 hover:text-brand-charcoal">Students</Link><span>/</span><span className="font-medium text-slate-700">{student.name}</span></nav>
       <Card className="overflow-hidden">
         <div className="flex flex-wrap items-start gap-4 px-5 py-5 sm:px-6">
           <Avatar initials={initials(student.name)} className="size-[52px] text-lg" />

@@ -30,7 +30,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       {children}
       {notice && (
         <div role="status" className="fixed bottom-5 right-5 z-[200] flex max-w-sm items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-[0_16px_40px_-12px_rgba(15,23,42,.28)]">
-          {notice.kind === "error" ? <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600" /> : <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-indigo-600" />}
+          {notice.kind === "error" ? <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600" /> : <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-green-600" />}
           <span className="leading-5">{notice.message}</span>
           <button onClick={() => setNotice(null)} className="rounded p-0.5 text-slate-400 hover:bg-slate-100" aria-label="Dismiss message"><X className="size-3.5" /></button>
         </div>
