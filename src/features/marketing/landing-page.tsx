@@ -34,7 +34,7 @@ export function LandingPage() {
           </nav>
           <div className="flex-1" />
           <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link href="/login">Log in</Link></Button>
-          <Button asChild><Link href="/login">Get started</Link></Button>
+          <Button asChild><Link href="/signup">Get started</Link></Button>
         </div>
       </header>
 
@@ -47,7 +47,7 @@ export function LandingPage() {
               <h1 className="max-w-[540px] text-[42px] font-bold leading-[1.06] tracking-[-.04em] text-brand-ink sm:text-5xl">Every student journey, under control.</h1>
               <p className="mt-5 max-w-[500px] text-[17px] leading-[1.62] text-text-secondary">Anchora replaces WhatsApp threads and tangled spreadsheets with one precise workspace. Consultants see who needs attention today, and students always know their next step.</p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Button asChild size="lg"><Link href="/login">Get started <ArrowRight /></Link></Button>
+                <Button asChild size="lg"><Link href="/signup">Get started <ArrowRight /></Link></Button>
                 <Button asChild variant="secondary" size="lg"><a href="#how">See how it works</a></Button>
               </div>
               <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] leading-5 text-text-muted">
@@ -108,7 +108,7 @@ export function LandingPage() {
               <div className="type-micro mb-3.5 text-brand-gold">The old way versus Anchora</div>
               <h2 className="text-3xl font-bold leading-[1.15] tracking-[-.03em]">Stop stitching updates together by hand.</h2>
               <p className="mt-4 text-[15px] leading-[1.65] text-border-strong">A student pings on WhatsApp, a deadline lives in one consultant&apos;s sheet, and a document sits in an inbox. Anchora makes the status visible to everyone.</p>
-              <Button asChild size="lg" className="mt-6 border-brand-gold bg-brand-gold text-brand-ink hover:border-accent-border hover:bg-accent-border"><Link href="/login">Get started</Link></Button>
+              <Button asChild size="lg" className="mt-6 border-brand-gold bg-brand-gold text-brand-ink hover:border-accent-border hover:bg-accent-border"><Link href="/signup">Get started</Link></Button>
             </div>
             <div className="relative flex flex-col gap-3">
               <div className="rounded-card border border-text-inverse/15 bg-text-inverse/5 p-4"><div className="type-micro mb-2.5 text-danger-border">Before</div><div className="text-sm leading-[1.9] text-border-strong">WhatsApp threads · Excel per intake · Shared inboxes · Missed deadlines</div></div>

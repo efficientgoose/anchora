@@ -3,6 +3,7 @@ import { AppProviders } from "@/components/providers/app-providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tryanchora.com"),
   title: { default: "Anchora", template: "%s · Anchora" },
   description: "Study-abroad operations, kept on track.",
 };

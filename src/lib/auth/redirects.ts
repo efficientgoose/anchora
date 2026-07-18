@@ -1,4 +1,9 @@
 const DEFAULT_AUTHENTICATED_PATH = "/students";
+const PUBLIC_AUTH_PATHS = ["/login", "/signup", "/forgot-password", "/update-password", "/auth/confirm"];
+
+function isPublicAuthPath(pathname: string) {
+  return PUBLIC_AUTH_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+}
 
 export function safeInternalPath(value: unknown, fallback = DEFAULT_AUTHENTICATED_PATH) {
   if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return fallback;
@@ -6,7 +11,7 @@ export function safeInternalPath(value: unknown, fallback = DEFAULT_AUTHENTICATE
   try {
     const base = new URL("https://anchora.internal");
     const destination = new URL(value, base);
-    if (destination.origin !== base.origin || destination.pathname === "/login" || destination.pathname.startsWith("/login/")) return fallback;
+    if (destination.origin !== base.origin || isPublicAuthPath(destination.pathname)) return fallback;
     return `${destination.pathname}${destination.search}${destination.hash}`;
   } catch {
     return fallback;

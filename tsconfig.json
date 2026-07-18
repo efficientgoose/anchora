@@ -37,6 +37,7 @@
   ],
   "exclude": [
     "node_modules",
+    "supabase/functions",
     "# Study-Abroad Operations Dashboard__I'll build a cohesive, no-nonsense B2B ops tool for consultants. Clean, dense"
   ]
 }
