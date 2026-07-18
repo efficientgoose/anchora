@@ -150,7 +150,7 @@ Google OAuth uses a browser redirect to Supabase and a PKCE code exchange at Anc
 
 ### Google Cloud
 
-1. Create a dedicated Google Cloud project named **Anchora Production**.
+1. Create a dedicated Google Cloud project named **Anchora**.
 2. Open **Google Auth Platform** and configure an external application.
 3. Use Anchora's product name and logo, and set the support and developer contact address to `hello@tryanchora.com`.
 4. Add these public application links:
