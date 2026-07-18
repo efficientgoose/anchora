@@ -16,6 +16,8 @@
     "@radix-ui/react-dropdown-menu": "latest",
     "@radix-ui/react-select": "latest",
     "@radix-ui/react-slot": "latest",
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.7",
     "@tanstack/react-query": "latest",
     "@tanstack/react-table": "latest",
     "class-variance-authority": "latest",

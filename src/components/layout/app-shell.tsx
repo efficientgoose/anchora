@@ -9,7 +9,7 @@ import { BrandIcon, BrandMark } from "@/components/brand/brand-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ACTIVE_STAFF } from "@/domain/constants";
+import { signOutAction } from "@/features/auth/actions";
 import { initials } from "@/domain/student-calculations";
 import { cn } from "@/lib/cn";
 
@@ -25,6 +25,12 @@ const navItems = [
 const SIDEBAR_STORAGE_KEY = "anchora-sidebar-collapsed";
 const SIDEBAR_CHANGE_EVENT = "anchora-sidebar-change";
 let sidebarFallback = false;
+
+export interface WorkspaceActor {
+  name: string;
+  email: string;
+  title: string;
+}
 
 function readSidebarPreference() {
   try {
@@ -64,7 +70,7 @@ function SidebarToggleIcon({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-function SidebarContent({ collapsed = false, onToggle }: { collapsed?: boolean; onToggle?: () => void }) {
+function SidebarContent({ actor, collapsed = false, onToggle }: { actor: WorkspaceActor; collapsed?: boolean; onToggle?: () => void }) {
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col bg-surface">
@@ -103,19 +109,19 @@ function SidebarContent({ collapsed = false, onToggle }: { collapsed?: boolean; 
         {collapsed ? (
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <button type="button" aria-label={`${ACTIVE_STAFF.name} account menu`} className="rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/30"><Avatar initials={initials(ACTIVE_STAFF.name)} className="size-8" /></button>
+              <button type="button" aria-label={`${actor.name} account menu`} className="rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/30"><Avatar initials={initials(actor.name)} className="size-8" /></button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content side="right" align="end" sideOffset={8} alignOffset={-24} collisionPadding={20} className="z-[100] min-w-[150px] rounded-sm border border-border-default bg-surface p-1.5 text-text-secondary shadow-popover">
-                <DropdownMenu.Item asChild><Link href="/" className="flex min-h-9 cursor-pointer items-center gap-2 rounded-sm px-2.5 py-2 text-[13px] font-medium outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-text-primary"><LogOut aria-hidden="true" className="size-4 text-text-muted" />Sign out</Link></DropdownMenu.Item>
+                <form action={signOutAction}><DropdownMenu.Item asChild><button type="submit" className="flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-sm px-2.5 py-2 text-left text-[13px] font-medium outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-text-primary"><LogOut aria-hidden="true" className="size-4 text-text-muted" />Sign out</button></DropdownMenu.Item></form>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
         ) : (
           <>
-            <Avatar initials={initials(ACTIVE_STAFF.name)} className="size-8" />
-            <div className="min-w-0 flex-1 leading-tight"><div className="truncate text-[13px] font-semibold text-text-primary">{ACTIVE_STAFF.name}</div><div className="truncate text-[11px] leading-4 text-text-muted">{ACTIVE_STAFF.title}</div></div>
-            <Button asChild size="icon-sm" variant="ghost" className="text-text-muted" aria-label="Sign out"><Link href="/"><LogOut /></Link></Button>
+            <Avatar initials={initials(actor.name)} className="size-8" />
+            <div className="min-w-0 flex-1 leading-tight"><div className="truncate text-[13px] font-semibold text-text-primary">{actor.name}</div><div className="truncate text-[11px] leading-4 text-text-muted" title={actor.email}>{actor.title}</div></div>
+            <form action={signOutAction}><Button type="submit" size="icon-sm" variant="ghost" className="text-text-muted" aria-label="Sign out"><LogOut /></Button></form>
           </>
         )}
       </div>
@@ -123,17 +129,17 @@ function SidebarContent({ collapsed = false, onToggle }: { collapsed?: boolean; 
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ actor, children }: { actor: WorkspaceActor; children: React.ReactNode }) {
   const collapsed = React.useSyncExternalStore(subscribeToSidebarPreference, readSidebarPreference, () => false);
   const toggleSidebar = React.useCallback(() => writeSidebarPreference(!collapsed), [collapsed]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-canvas">
       <a href="#main-content" className="skip-link">Skip to main content</a>
-      <aside className={cn("hidden shrink-0 overflow-hidden border-r border-border-default transition-[width] [transition-duration:var(--motion-fast)] lg:block", collapsed ? "w-[72px]" : "w-64")}><SidebarContent collapsed={collapsed} onToggle={toggleSidebar} /></aside>
+      <aside className={cn("hidden shrink-0 overflow-hidden border-r border-border-default transition-[width] [transition-duration:var(--motion-fast)] lg:block", collapsed ? "w-[72px]" : "w-64")}><SidebarContent actor={actor} collapsed={collapsed} onToggle={toggleSidebar} /></aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center border-b border-border-default bg-surface px-4 lg:hidden">
-          <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent><SidebarContent /></SheetContent></Sheet>
+          <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent><SidebarContent actor={actor} /></SheetContent></Sheet>
           <BrandMark href="/students" compact />
         </header>
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">{children}</main>

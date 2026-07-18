@@ -1,24 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { ArrowRight, Quote } from "lucide-react";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
+import { Notice } from "@/components/ui/notice";
+import { signInAction, type SignInState } from "./actions";
 
-export function LoginPage() {
-  const router = useRouter();
-  const [remember, setRemember] = React.useState(true);
-  const [pending, setPending] = React.useState(false);
+const initialSignInState: SignInState = { status: "idle" };
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    window.setTimeout(() => router.push("/students"), 260);
-  }
+export function LoginPage({ nextPath, configurationMissing = false }: { nextPath: string; configurationMissing?: boolean }) {
+  const [state, formAction, pending] = React.useActionState(signInAction, initialSignInState);
 
   return (
     <main className="grid min-h-screen bg-canvas lg:grid-cols-[minmax(0,1fr)_minmax(480px,.9fr)]">
@@ -30,18 +24,18 @@ export function LoginPage() {
           <h1 className="mt-2 text-[28px] font-bold leading-9 tracking-[-.03em]">Welcome back</h1>
           <p className="mt-1.5 text-sm leading-[22px] text-text-muted">Sign in to see every active student journey.</p>
 
-          <form className="mt-7" onSubmit={submit}>
+          {configurationMissing && <Notice tone="warning" className="mt-6" title="Sign-in is not configured">Add the Supabase environment settings before using this workspace.</Notice>}
+          {state.status === "error" && state.message && <Notice key={state.message} tone="danger" className="mt-6" role="alert">{state.message}</Notice>}
+
+          <form className="mt-7" action={formAction}>
+            <input type="hidden" name="next" value={nextPath} />
             <div className="space-y-5">
-              <FormField label="Work email" required><Input type="email" placeholder="you@consultancy.de" required autoComplete="email" /></FormField>
-              <FormField label="Password" required><Input type="password" placeholder="••••••••" required autoComplete="current-password" /></FormField>
+              <FormField label="Work email" required error={state.fieldErrors?.email}><Input name="email" type="email" placeholder="you@consultancy.de" required autoComplete="username" defaultValue={state.email} disabled={pending || configurationMissing} /></FormField>
+              <FormField label="Password" required error={state.fieldErrors?.password}><Input name="password" type="password" placeholder="••••••••" required autoComplete="current-password" disabled={pending || configurationMissing} /></FormField>
             </div>
-            <div className="my-5 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5"><Checkbox id="remember-session" checked={remember} onCheckedChange={(value) => setRemember(value === true)} /><label htmlFor="remember-session" className="text-[13px] leading-5 text-text-secondary">Keep me signed in</label></div>
-              <button type="button" className="min-h-8 rounded-sm px-1 text-[13px] font-medium leading-5 text-text-primary hover:underline">Forgot password?</button>
-            </div>
-            <Button className="w-full" size="lg" disabled={pending}>{pending ? "Signing in…" : <>Sign in <ArrowRight /></>}</Button>
+            <p className="my-5 text-[13px] leading-5 text-text-muted">Access is managed by your workspace owner.</p>
+            <Button className="w-full" size="lg" disabled={pending || configurationMissing}>{pending ? "Signing in…" : <>Sign in <ArrowRight /></>}</Button>
           </form>
-          <div className="mt-6 text-center text-[13px] leading-5 text-text-muted">New to Anchora? <button type="button" className="min-h-8 rounded-sm font-semibold text-text-primary hover:underline">Request access</button></div>
         </div>
       </section>
 
