@@ -20,5 +20,5 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ n
     if (data?.claims?.sub) redirect(nextPath);
   }
 
-  return <LoginPage nextPath={nextPath} configurationMissing={!configured} invalidLink={error === "invalid_link"} />;
+  return <LoginPage nextPath={nextPath} configurationMissing={!configured} invalidLink={error === "invalid_link"} googleAuthError={error === "google_oauth"} />;
 }
