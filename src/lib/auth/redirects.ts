@@ -1,5 +1,5 @@
 const DEFAULT_AUTHENTICATED_PATH = "/students";
-const PUBLIC_AUTH_PATHS = ["/login", "/signup", "/forgot-password", "/update-password", "/auth/confirm"];
+const PUBLIC_AUTH_PATHS = ["/login", "/signup", "/forgot-password", "/update-password", "/auth/confirm", "/auth/callback"];
 
 function isPublicAuthPath(pathname: string) {
   return PUBLIC_AUTH_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));

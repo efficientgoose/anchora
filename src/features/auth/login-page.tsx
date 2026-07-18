@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Notice } from "@/components/ui/notice";
 import { AuthShell } from "./auth-shell";
 import { signInAction, type SignInState } from "./actions";
+import { GoogleAuthButton } from "./google-auth-button";
 import { ResendConfirmationForm } from "./resend-confirmation-form";
 
 const initialSignInState: SignInState = { status: "idle" };
 
-export function LoginPage({ nextPath, configurationMissing = false, invalidLink = false }: { nextPath: string; configurationMissing?: boolean; invalidLink?: boolean }) {
+export function LoginPage({ nextPath, configurationMissing = false, invalidLink = false, googleAuthError = false }: { nextPath: string; configurationMissing?: boolean; invalidLink?: boolean; googleAuthError?: boolean }) {
   const [state, formAction, pending] = React.useActionState(signInAction, initialSignInState);
 
   return (
@@ -25,6 +26,7 @@ export function LoginPage({ nextPath, configurationMissing = false, invalidLink 
     >
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Sign-in is not configured">Add the Supabase environment settings before using this workspace.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That link has expired">Sign in if your account is ready, or ask for a fresh invitation.</Notice>}
+      {googleAuthError && <Notice tone="warning" className="mb-5" title="Google sign-in did not finish">Try again, or continue with your email and password.</Notice>}
       {state.status === "error" && state.message && <Notice key={state.message} tone="danger" className="mb-5" role="alert">{state.message}</Notice>}
       {state.status === "unconfirmed" && state.message && (
         <div className="mb-5 space-y-4">
@@ -32,6 +34,8 @@ export function LoginPage({ nextPath, configurationMissing = false, invalidLink 
           {state.email && <ResendConfirmationForm email={state.email} disabled={configurationMissing} />}
         </div>
       )}
+
+      <GoogleAuthButton nextPath={nextPath} disabled={configurationMissing} />
 
       <form action={formAction}>
         <input type="hidden" name="next" value={nextPath} />

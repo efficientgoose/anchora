@@ -1,6 +1,6 @@
 # Anchora authentication and email rollout
 
-Anchora supports public email/password signup, mandatory email confirmation, sign-in, resend confirmation, password recovery, and Supabase administrator invitations.
+Anchora supports Google sign-in, public email/password signup, mandatory email confirmation, sign-in, resend confirmation, password recovery, and Supabase administrator invitations.
 
 The application uses Supabase SSR cookie sessions. Supabase Auth invokes the signed `send-email` Edge Function, which renders the Anchora React Email template and delivers it through Resend.
 
@@ -11,7 +11,9 @@ Student records in this release remain synthetic and browser-local. Do not enter
 | Purpose | Value |
 | --- | --- |
 | Canonical application URL | `https://tryanchora.com` |
-| Authentication callback | `https://tryanchora.com/auth/confirm` |
+| Email authentication callback | `https://tryanchora.com/auth/confirm` |
+| OAuth application callback | `https://tryanchora.com/auth/callback` |
+| Supabase Google callback | `https://nvkimcimfzhirbayoggn.supabase.co/auth/v1/callback` |
 | Email sender | `Anchora <hello@tryanchora.com>` |
 | Reply address | `hello@tryanchora.com` |
 | Supabase project reference | `nvkimcimfzhirbayoggn` |
@@ -136,11 +138,78 @@ Site URL: https://tryanchora.com
 Redirect URLs:
 https://tryanchora.com/auth/confirm
 http://localhost:3000/auth/confirm
+https://tryanchora.com/auth/callback
+http://localhost:3000/auth/callback
 ```
 
 Do not add a broad production wildcard. Review Auth email, signup, verification, and token-refresh rate limits before inviting testers.
 
-## 8. User creation paths
+## 8. Configure Google sign-in
+
+Google OAuth uses a browser redirect to Supabase and a PKCE code exchange at Anchora's `/auth/callback` route. Anchora requests only `openid`, `email`, and `profile`. It does not request Gmail, Drive, Calendar, contacts, or other Google product access, and it does not separately store Google provider tokens.
+
+### Google Cloud
+
+1. Create a dedicated Google Cloud project named **Anchora Production**.
+2. Open **Google Auth Platform** and configure an external application.
+3. Use Anchora's product name and logo, and set the support and developer contact address to `hello@tryanchora.com`.
+4. Add these public application links:
+
+   ```text
+   Home page: https://tryanchora.com
+   Privacy policy: https://tryanchora.com/privacy
+   Terms of service: https://tryanchora.com/terms
+   Authorized domain: tryanchora.com
+   ```
+
+5. Keep the requested scopes limited to the standard identity scopes: `openid`, `email`, and `profile`.
+6. Create an **OAuth client ID** with application type **Web application**.
+7. Add the authorized JavaScript origins exactly:
+
+   ```text
+   https://tryanchora.com
+   http://localhost:3000
+   ```
+
+8. Add the authorized redirect URI exactly:
+
+   ```text
+   https://nvkimcimfzhirbayoggn.supabase.co/auth/v1/callback
+   ```
+
+9. Copy the client ID and client secret. The client secret belongs only in Supabase and must never be added to this repository, `.env.local`, or Vercel.
+
+### Supabase
+
+1. Open **Authentication > Sign In / Providers > Google**.
+2. Enable Google and paste the Google client ID and client secret.
+3. Save the provider, then confirm **Authentication > URL Configuration** contains both Anchora OAuth callbacks:
+
+   ```text
+   https://tryanchora.com/auth/callback
+   http://localhost:3000/auth/callback
+   ```
+
+4. Keep automatic identity linking enabled. Supabase can link a Google identity to an existing account when the provider verifies the same email address. Do not implement application-side email matching or account merging.
+5. Keep the Google app in testing while running the controlled checks below. Add only the owner's accounts as test users.
+
+### Controlled activation
+
+1. Open `/signup` and continue with a new Google account. Confirm Anchora creates the account, establishes a session, and opens `/students`.
+2. Sign out, then use the same Google account from `/login`. Confirm the existing Anchora account opens without a second user record.
+3. Create and confirm an email/password account, sign out, then continue with Google using the same verified email. Confirm Supabase shows one user with both email and Google identities.
+4. Cancel Google consent and confirm Anchora returns to `/login` with a neutral retry message and no provider error details.
+5. Start from `/login?next=/students/new`, complete Google sign-in, and confirm the safe internal destination is preserved.
+6. Try a hostile `next` value such as `//example.com` and confirm Anchora falls back to `/students`.
+7. Review Supabase Auth logs and Vercel function logs, then move the Google app to production and monitor the first small tester cohort before broader sharing.
+
+The Privacy Policy and Terms of Use are early-access product drafts. Have the owner and qualified legal counsel review them before collecting real customer or student information.
+
+## 9. User creation paths
+
+### Google sign-in
+
+Users can choose **Continue with Google** from `/login` or `/signup`. A first-time Google user is created automatically. A returning Google user signs in to the existing account. When Google verifies an email that already belongs to a confirmed Anchora email/password account, Supabase handles identity linking.
 
 ### Public signup
 
@@ -154,15 +223,17 @@ Use **Authentication > Users > Invite user**. The invite receives Anchora's bran
 
 Administrators may still create a confirmed user with a password directly in Supabase. That user can sign in immediately. `full_name` can be stored in user metadata for display, but user metadata must never be used to grant authorization.
 
-## 9. Deployment checkpoints
+## 10. Deployment checkpoints
 
 Deploy and observe one checkpoint before moving to the next:
 
 1. **Domain foundation:** Vercel custom domain and Cloudflare reply forwarding.
 2. **Email delivery:** Resend verification, Edge Function deployment, signed hook, and one controlled recovery email.
-3. **Public signup:** signup, confirmation, unconfirmed-login handling, and resend confirmation.
-4. **Password recovery:** request, callback, new password, and workspace access.
-5. **Administrator invitation:** invitation, password setup, and workspace access.
+3. **Legal foundation:** public Privacy Policy and Terms of Use, with owner review before production use.
+4. **Public signup:** signup, confirmation, unconfirmed-login handling, and resend confirmation.
+5. **Google sign-in:** controlled test users, new account, returning account, same-email linking, cancellation, and safe redirect checks.
+6. **Password recovery:** request, callback, new password, and workspace access.
+7. **Administrator invitation:** invitation, password setup, and workspace access.
 
 At each checkpoint, monitor Supabase Auth logs, Edge Function logs, Resend delivery/bounce/suppression events, and Vercel callback errors for at least 24 hours with a small group.
 
@@ -176,6 +247,11 @@ If the Send Email Hook fails, disable public signup and recovery entry points, d
 - Confirm duplicate signup and recovery responses do not reveal whether an account exists.
 - Request a recovery email, choose a new password, and sign in with it.
 - Confirm expired and reused links return to a recovery screen instead of opening the workspace.
+- Create a new user with Google and confirm `/students` opens.
+- Sign in again with the same Google identity and confirm no duplicate user is created.
+- Link Google to an existing confirmed email/password account with the same verified email.
+- Cancel Google consent and confirm the login page shows a neutral retry message.
+- Confirm both local and production OAuth callbacks are allow-listed without a production wildcard.
 - Invite a user from Supabase, choose a password, and open the workspace.
 - Create a confirmed password user directly in Supabase and sign in normally.
 - Test authentication emails on desktop and mobile with images enabled and disabled.

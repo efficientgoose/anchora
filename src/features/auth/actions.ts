@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { AUTH_FLOW_COOKIE } from "@/lib/auth/flow";
 import { safeInternalPath } from "@/lib/auth/redirects";
-import { getAuthConfirmationUrl } from "@/lib/site-url";
+import { getAuthCallbackUrl, getAuthConfirmationUrl } from "@/lib/site-url";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 interface AuthErrorLike {
@@ -144,6 +144,31 @@ export async function signInAction(_previousState: SignInState, formData: FormDa
   }
 
   redirect(safeInternalPath(parsed.data.next));
+}
+
+export async function signInWithGoogleAction(formData: FormData) {
+  const requestedDestination = formData.get("next");
+  const nextPath = safeInternalPath(typeof requestedDestination === "string" ? requestedDestination : undefined);
+  const supabase = await createSupabaseServerClient();
+
+  if (!supabase) {
+    redirect(`/login?error=configuration&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: getAuthCallbackUrl(nextPath),
+      scopes: "openid email profile",
+    },
+  });
+
+  if (error || !data.url) {
+    if (error) logAuthFailure("google-sign-in", error);
+    redirect(`/login?error=google_oauth&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  redirect(data.url);
 }
 
 export async function signUpAction(_previousState: SignUpState, formData: FormData): Promise<SignUpState> {

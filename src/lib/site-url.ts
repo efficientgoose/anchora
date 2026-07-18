@@ -19,3 +19,9 @@ export function getSiteUrl() {
 export function getAuthConfirmationUrl() {
   return new URL("/auth/confirm", getSiteUrl()).toString();
 }
+
+export function getAuthCallbackUrl(nextPath: string) {
+  const callbackUrl = new URL("/auth/callback", getSiteUrl());
+  callbackUrl.searchParams.set("next", nextPath);
+  return callbackUrl.toString();
+}

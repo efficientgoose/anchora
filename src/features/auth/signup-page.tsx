@@ -10,6 +10,7 @@ import { Notice } from "@/components/ui/notice";
 import { AuthShell } from "./auth-shell";
 import { signUpAction, type SignUpState } from "./actions";
 import { ConfirmationPending } from "./confirmation-pending";
+import { GoogleAuthButton } from "./google-auth-button";
 
 const initialState: SignUpState = { status: "idle" };
 
@@ -34,6 +35,8 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Signup is not configured">Add the Supabase environment settings before creating an account.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That confirmation link has expired">Enter your details again or resend confirmation from the sign-in page.</Notice>}
       {state.status === "error" && state.message && <Notice tone="danger" className="mb-5" role="alert">{state.message}</Notice>}
+
+      <GoogleAuthButton disabled={configurationMissing} />
 
       <form action={formAction}>
         <div className="space-y-4">
