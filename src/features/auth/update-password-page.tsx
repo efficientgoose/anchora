@@ -3,17 +3,17 @@
 import * as React from "react";
 import { ArrowRight, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FormField } from "@/components/ui/form-field";
-import { Input } from "@/components/ui/input";
 import { Notice } from "@/components/ui/notice";
 import type { PasswordSetupFlow } from "@/lib/auth/flow";
 import { AuthShell } from "./auth-shell";
+import { PasswordFields } from "./password-fields";
 import { updatePasswordAction, type UpdatePasswordState } from "./actions";
 
 const initialState: UpdatePasswordState = { status: "idle" };
 
 export function UpdatePasswordPage({ flow }: { flow: PasswordSetupFlow }) {
   const [state, formAction, pending] = React.useActionState(updatePasswordAction, initialState);
+  const [passwordsValid, setPasswordsValid] = React.useState(false);
   const invited = flow === "invite";
 
   return (
@@ -24,11 +24,18 @@ export function UpdatePasswordPage({ flow }: { flow: PasswordSetupFlow }) {
       </div>
       {state.status === "error" && state.message && <Notice tone="danger" className="mb-5" role="alert">{state.message}</Notice>}
       <form action={formAction}>
-        <div className="space-y-5">
-          <FormField label="New password" required hint="Use at least 8 characters." error={state.fieldErrors?.password}><Input name="password" type="password" placeholder="Create a new password" required minLength={8} autoComplete="new-password" disabled={pending} /></FormField>
-          <FormField label="Confirm new password" required error={state.fieldErrors?.confirmPassword}><Input name="confirmPassword" type="password" placeholder="Repeat your new password" required minLength={8} autoComplete="new-password" disabled={pending} /></FormField>
-        </div>
-        <Button className="mt-6 w-full" size="lg" disabled={pending}>{pending ? "Saving password…" : <>Save password <ArrowRight /></>}</Button>
+        <PasswordFields
+          className="space-y-5"
+          passwordLabel="New password"
+          confirmPasswordLabel="Confirm new password"
+          passwordPlaceholder="Create a new password"
+          confirmPasswordPlaceholder="Repeat your new password"
+          passwordError={state.fieldErrors?.password}
+          confirmPasswordError={state.fieldErrors?.confirmPassword}
+          disabled={pending}
+          onValidityChange={setPasswordsValid}
+        />
+        <Button className="mt-6 w-full" size="lg" disabled={pending || !passwordsValid}>{pending ? "Saving password…" : <>Save password <ArrowRight /></>}</Button>
       </form>
     </AuthShell>
   );
