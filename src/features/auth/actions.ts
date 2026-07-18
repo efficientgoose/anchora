@@ -159,7 +159,7 @@ export async function signInWithGoogleAction(formData: FormData) {
     provider: "google",
     options: {
       redirectTo: getAuthCallbackUrl(nextPath),
-      scopes: "openid email profile",
+      scopes: "openid",
     },
   });
 
