@@ -51,7 +51,7 @@ export function LandingPage() {
                 <Button asChild variant="secondary" size="lg"><a href="#how">See how it works</a></Button>
               </div>
               <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] leading-5 text-text-muted">
-                {["No credit card", "Onboard in a day", "GDPR-ready"].map((item) => <span key={item} className="flex items-center gap-1.5"><Check aria-hidden="true" className="size-3.5 text-status-success" />{item}</span>)}
+                {["No credit card", "Onboard in a day", "Early-access workspace"].map((item) => <span key={item} className="flex items-center gap-1.5"><Check aria-hidden="true" className="size-3.5 text-status-success" />{item}</span>)}
               </div>
             </div>
 
@@ -118,7 +118,7 @@ export function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-border-subtle"><div className="mx-auto flex max-w-[1140px] items-center gap-3 px-5 py-7 text-[13px] leading-5 text-text-muted sm:px-7"><BrandMark compact /><span>© 2026 Anchora</span><div className="flex-1" /><a href="#product" className="hidden rounded-sm hover:text-text-primary sm:block">Product</a><Link href="/login" className="rounded-sm hover:text-text-primary">Log in</Link></div></footer>
+      <footer className="border-t border-border-subtle"><div className="mx-auto flex max-w-[1140px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-7 text-[13px] leading-5 text-text-muted sm:px-7"><BrandMark compact /><span>© 2026 Anchora</span><div className="flex-1" /><a href="#product" className="hidden rounded-sm hover:text-text-primary sm:block">Product</a><Link href="/privacy" className="rounded-sm hover:text-text-primary">Privacy</Link><Link href="/terms" className="rounded-sm hover:text-text-primary">Terms</Link><Link href="/login" className="rounded-sm hover:text-text-primary">Log in</Link></div></footer>
     </div>
   );
 }

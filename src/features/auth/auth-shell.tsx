@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { Check, Compass, FileCheck2, GraduationCap, Landmark, Plane } from "lucide-react";
 import { BrandMark } from "@/components/brand/brand-mark";
@@ -21,6 +22,10 @@ export function AuthShell({ eyebrow, title, description, children, footer }: { e
           <p className="mt-2 max-w-[390px] text-sm leading-[22px] text-text-muted">{description}</p>
           <div className="mt-7">{children}</div>
           {footer && <div className="mt-7 border-t border-border-subtle pt-5 text-center text-[13px] leading-5 text-text-muted">{footer}</div>}
+          <nav aria-label="Legal" className="mt-4 flex items-center justify-center gap-4 text-[11px] leading-5 text-text-muted">
+            <Link href="/privacy" className="underline decoration-border-strong underline-offset-4 hover:text-text-primary hover:decoration-brand-gold">Privacy</Link>
+            <Link href="/terms" className="underline decoration-border-strong underline-offset-4 hover:text-text-primary hover:decoration-brand-gold">Terms</Link>
+          </nav>
         </div>
       </section>
 
