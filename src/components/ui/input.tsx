@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const inputVariants = cva(
-  "w-full rounded-control border border-border-default bg-surface text-text-primary outline-none transition placeholder:text-text-muted [transition-duration:var(--motion-fast)] hover:border-border-strong focus:border-brand-ink focus:ring-[3px] focus:ring-brand-gold/25 aria-invalid:border-status-danger aria-invalid:ring-danger-border disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted",
+  "w-full rounded-control border border-border-default bg-surface text-text-primary outline-none transition placeholder:text-text-muted [transition-duration:var(--motion-fast)] hover:border-border-strong focus:border-brand-ink aria-invalid:border-status-danger aria-invalid:focus:border-status-danger disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted",
   {
     variants: {
       size: {
@@ -19,7 +19,7 @@ const inputVariants = cva(
 export interface InputProps extends Omit<React.ComponentProps<"input">, "size">, VariantProps<typeof inputVariants> {}
 
 export function Input({ className, type, size, ...props }: InputProps) {
-  return <input type={type} className={cn(inputVariants({ size }), className)} {...props} />;
+  return <input data-slot="input" type={type} className={cn(inputVariants({ size }), className)} {...props} />;
 }
 
 export { inputVariants };

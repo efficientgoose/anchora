@@ -11,11 +11,13 @@ import { AuthShell } from "./auth-shell";
 import { signUpAction, type SignUpState } from "./actions";
 import { ConfirmationPending } from "./confirmation-pending";
 import { GoogleAuthButton } from "./google-auth-button";
+import { PasswordFields } from "./password-fields";
 
 const initialState: SignUpState = { status: "idle" };
 
 export function SignupPage({ configurationMissing = false, invalidLink = false }: { configurationMissing?: boolean; invalidLink?: boolean }) {
   const [state, formAction, pending] = React.useActionState(signUpAction, initialState);
+  const [passwordsValid, setPasswordsValid] = React.useState(false);
 
   if (state.status === "success" && state.email) {
     return (
@@ -42,10 +44,14 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
         <div className="space-y-4">
           <FormField label="Full name" required error={state.fieldErrors?.fullName}><Input name="fullName" type="text" placeholder="Your full name" required autoComplete="name" defaultValue={state.fullName} disabled={pending || configurationMissing} /></FormField>
           <FormField label="Email address" required error={state.fieldErrors?.email}><Input name="email" type="email" placeholder="you@consultancy.com" required autoComplete="email" defaultValue={state.email} disabled={pending || configurationMissing} /></FormField>
-          <FormField label="Password" required hint="Use at least 8 characters." error={state.fieldErrors?.password}><Input name="password" type="password" placeholder="Create a password" required minLength={8} autoComplete="new-password" disabled={pending || configurationMissing} /></FormField>
-          <FormField label="Confirm password" required error={state.fieldErrors?.confirmPassword}><Input name="confirmPassword" type="password" placeholder="Repeat your password" required minLength={8} autoComplete="new-password" disabled={pending || configurationMissing} /></FormField>
+          <PasswordFields
+            passwordError={state.fieldErrors?.password}
+            confirmPasswordError={state.fieldErrors?.confirmPassword}
+            disabled={pending || configurationMissing}
+            onValidityChange={setPasswordsValid}
+          />
         </div>
-        <Button className="mt-6 w-full" size="lg" disabled={pending || configurationMissing}>{pending ? "Creating account…" : <>Create account <ArrowRight /></>}</Button>
+        <Button className="mt-6 w-full" size="lg" disabled={pending || configurationMissing || !passwordsValid}>{pending ? "Creating account…" : <>Create account <ArrowRight /></>}</Button>
         <p className="mt-4 text-center text-xs leading-5 text-text-muted">We will email you a secure confirmation link before your workspace opens.</p>
       </form>
     </AuthShell>

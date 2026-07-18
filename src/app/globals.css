@@ -179,6 +179,10 @@ a[aria-disabled="true"] {
   scroll-margin-block: 5rem;
 }
 
+:where(input[data-slot="input"]):focus-visible {
+  outline: none;
+}
+
 ::selection {
   background: rgb(234 179 8 / 0.34);
   color: var(--brand-ink);
