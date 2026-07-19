@@ -98,7 +98,7 @@ export async function createSocialImage() {
           style={{
             display: "flex",
             flexDirection: "column",
-            marginTop: 92,
+            marginTop: 56,
             maxWidth: 970,
             position: "relative",
           }}
