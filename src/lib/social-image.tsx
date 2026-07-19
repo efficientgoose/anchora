@@ -1,10 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-
-export const SOCIAL_IMAGE_ALT = "Anchora — Manage every application. Never miss a deadline.";
-export const SOCIAL_IMAGE_SIZE = { width: 1200, height: 630 };
-export const SOCIAL_IMAGE_TYPE = "image/png";
+import { SOCIAL_IMAGE_SIZE } from "@/lib/social-metadata";
 
 const forwardLines = Array.from({ length: 12 }, (_, index) => ({
   left: 680 + index * 62,
