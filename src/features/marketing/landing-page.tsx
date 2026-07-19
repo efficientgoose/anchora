@@ -28,9 +28,9 @@ export function LandingPage() {
         <div className="mx-auto flex h-16 max-w-[1140px] items-center px-5 sm:px-7">
           <BrandMark />
           <nav className="ml-11 hidden items-center gap-7 text-sm text-text-secondary md:flex" aria-label="Main navigation">
-            <a className="rounded-sm transition-colors hover:text-text-primary" href="#product">Product</a>
-            <a className="rounded-sm transition-colors hover:text-text-primary" href="#how">How it works</a>
-            <a className="rounded-sm transition-colors hover:text-text-primary" href="#why">Why Anchora</a>
+            <a className="link-hover-gold rounded-sm" href="#product">Product</a>
+            <a className="link-hover-gold rounded-sm" href="#how">How it works</a>
+            <a className="link-hover-gold rounded-sm" href="#why">Why Anchora</a>
           </nav>
           <div className="flex-1" />
           <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link href="/login">Log in</Link></Button>
@@ -125,13 +125,13 @@ export function LandingPage() {
             <span>© 2026 Anchora</span>
             <div className="flex-1" />
             <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <a href="#product" className="hidden rounded-sm hover:text-text-primary sm:block">Product</a>
-              <Link href="/privacy" className="rounded-sm hover:text-text-primary">Privacy</Link>
-              <Link href="/terms" className="rounded-sm hover:text-text-primary">Terms</Link>
-              <Link href="/login" className="rounded-sm hover:text-text-primary">Log in</Link>
+              <a href="#product" className="link-hover-gold hidden rounded-sm sm:block">Product</a>
+              <Link href="/privacy" className="link-hover-gold rounded-sm">Privacy</Link>
+              <Link href="/terms" className="link-hover-gold rounded-sm">Terms</Link>
+              <Link href="/login" className="link-hover-gold rounded-sm">Log in</Link>
             </nav>
           </div>
-          <p className="mt-5 text-center text-xs">Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4 transition-colors hover:text-brand-gold-strong hover:decoration-brand-gold">Ajinkya Kale</a></p>
+          <p className="mt-5 text-center text-xs">Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="link-hover-gold rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4">Ajinkya Kale</a></p>
         </div>
       </footer>
     </div>

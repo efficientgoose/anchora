@@ -38,7 +38,7 @@ export function OnboardingPage({ workspaceUnavailable = false }: { workspaceUnav
       {workspaceUnavailable ? (
         <Notice tone="danger" title="Workspace setup is temporarily unavailable">
           <span>We could not check your consultancy membership. </span>
-          <Link href="/onboarding" className="font-semibold underline underline-offset-4">Try again</Link>
+          <Link href="/onboarding" className="link-hover-gold font-semibold underline underline-offset-4">Try again</Link>
         </Notice>
       ) : (
         <>

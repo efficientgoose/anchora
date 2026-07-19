@@ -23,8 +23,8 @@ export function AuthShell({ eyebrow, title, description, children, footer }: { e
           <div className="mt-7">{children}</div>
           {footer && <div className="mt-7 border-t border-border-subtle pt-5 text-center text-[13px] leading-5 text-text-muted">{footer}</div>}
           <nav aria-label="Legal" className="mt-4 flex items-center justify-center gap-4 text-[11px] leading-5 text-text-muted">
-            <Link href="/privacy" className="underline decoration-border-strong underline-offset-4 hover:text-text-primary hover:decoration-brand-gold">Privacy</Link>
-            <Link href="/terms" className="underline decoration-border-strong underline-offset-4 hover:text-text-primary hover:decoration-brand-gold">Terms</Link>
+            <Link href="/privacy" className="link-hover-gold underline decoration-border-strong underline-offset-4">Privacy</Link>
+            <Link href="/terms" className="link-hover-gold underline decoration-border-strong underline-offset-4">Terms</Link>
           </nav>
         </div>
       </section>

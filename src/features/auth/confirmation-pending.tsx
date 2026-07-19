@@ -23,7 +23,7 @@ export function ConfirmationPending({ email }: { email: string }) {
         </div>
       </div>
       <div className="mt-5"><ResendConfirmationForm email={email} /></div>
-      <p className="mt-5 text-center text-[13px] leading-5 text-text-muted">Already confirmed? <Link href="/login" className="font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold">Sign in</Link></p>
+      <p className="mt-5 text-center text-[13px] leading-5 text-text-muted">Already confirmed? <Link href="/login" className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">Sign in</Link></p>
     </div>
   );
 }

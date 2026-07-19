@@ -17,7 +17,7 @@ export function ForgotPasswordPage({ configurationMissing = false, invalidLink =
 
   if (state.status === "success") {
     return (
-      <AuthShell eyebrow="Password recovery" title="Check your inbox" description="For your privacy, Anchora shows the same response whether or not an account exists." footer={<Link href="/login" className="inline-flex items-center gap-1.5 font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold"><ArrowLeft aria-hidden="true" className="size-3.5" /> Back to sign in</Link>}>
+      <AuthShell eyebrow="Password recovery" title="Check your inbox" description="For your privacy, Anchora shows the same response whether or not an account exists." footer={<Link href="/login" className="link-hover-gold inline-flex items-center gap-1.5 font-semibold text-text-primary underline decoration-border-strong underline-offset-4"><ArrowLeft aria-hidden="true" className="size-3.5" /> Back to sign in</Link>}>
         <div className="rounded-panel border border-success-border bg-success-soft p-5">
           <span className="flex size-11 items-center justify-center rounded-full bg-status-success text-white"><MailCheck aria-hidden="true" className="size-5" /></span>
           <h2 className="mt-4 text-base font-semibold text-status-success">Recovery request received</h2>
@@ -29,7 +29,7 @@ export function ForgotPasswordPage({ configurationMissing = false, invalidLink =
   }
 
   return (
-    <AuthShell eyebrow="Password recovery" title="Reset your password" description="Enter your account email and we will send you a secure link to choose a new password." footer={<Link href="/login" className="inline-flex items-center gap-1.5 font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold"><ArrowLeft aria-hidden="true" className="size-3.5" /> Back to sign in</Link>}>
+    <AuthShell eyebrow="Password recovery" title="Reset your password" description="Enter your account email and we will send you a secure link to choose a new password." footer={<Link href="/login" className="link-hover-gold inline-flex items-center gap-1.5 font-semibold text-text-primary underline decoration-border-strong underline-offset-4"><ArrowLeft aria-hidden="true" className="size-3.5" /> Back to sign in</Link>}>
       {configurationMissing && <Notice tone="warning" className="mb-5">Password recovery is not configured for this environment.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That recovery link has expired">Request a fresh link below.</Notice>}
       {state.status === "error" && state.message && <Notice tone="danger" className="mb-5" role="alert">{state.message}</Notice>}

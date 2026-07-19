@@ -22,7 +22,7 @@ export function LoginPage({ nextPath, configurationMissing = false, invalidLink 
       eyebrow="Consultant workspace"
       title="Welcome back"
       description="Sign in to see every active student journey and the work that needs attention next."
-      footer={<>New to Anchora? <Link href="/signup" className="font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold">Create an account</Link></>}
+      footer={<>New to Anchora? <Link href="/signup" className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">Create an account</Link></>}
     >
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Sign-in is not configured">Add the Supabase environment settings before using this workspace.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That link has expired">Sign in if your account is ready, or ask for a fresh invitation.</Notice>}
@@ -47,7 +47,7 @@ export function LoginPage({ nextPath, configurationMissing = false, invalidLink 
             <FormField label="Password" required error={state.fieldErrors?.password}>
               <Input name="password" type="password" placeholder="••••••••" required autoComplete="current-password" disabled={pending || configurationMissing} />
             </FormField>
-            <div className="mt-2 text-right"><Link href="/forgot-password" className="text-xs font-semibold text-text-secondary underline decoration-border-strong underline-offset-4 hover:text-text-primary hover:decoration-brand-gold">Forgot password?</Link></div>
+            <div className="mt-2 text-right"><Link href="/forgot-password" className="link-hover-gold text-xs font-semibold text-text-secondary underline decoration-border-strong underline-offset-4">Forgot password?</Link></div>
           </div>
         </div>
         <Button className="mt-6 w-full" size="lg" disabled={pending || configurationMissing}>{pending ? "Signing in…" : <>Sign in <ArrowRight /></>}</Button>
