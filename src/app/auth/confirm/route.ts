@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   if (error) return NextResponse.redirect(errorDestination(request, type));
 
   if (type === "invite") {
-    const { data: acceptance, error: acceptanceError } = await supabase.rpc("accept_consultant_invitation");
+    const { data: acceptance, error: acceptanceError } = await supabase.rpc("accept_member_invitation");
     if (acceptanceError || !Array.isArray(acceptance) || acceptance.length !== 1) {
       console.error("[auth:accept-invitation]", { code: acceptanceError?.code ?? "unexpected_result" });
       await supabase.auth.signOut({ scope: "local" });

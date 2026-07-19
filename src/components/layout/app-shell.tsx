@@ -8,7 +8,7 @@ import { BarChart3, Clock3, Info, LogOut, Menu, Plus, Settings, UserRoundCog, Us
 import { BrandIcon, BrandMark } from "@/components/brand/brand-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { StaffRole } from "@/domain/models";
 import { initials } from "@/domain/student-calculations";
 import { signOutAction } from "@/features/auth/actions";
@@ -38,7 +38,7 @@ export interface WorkspaceActor {
 const roleLabels: Record<StaffRole, string> = {
   owner: "Owner",
   admin: "Admin",
-  consultant: "Consultant",
+  member: "Member",
 };
 
 function readSidebarPreference() {
@@ -156,7 +156,7 @@ export function AppShell({ actor, children, demoData = false }: { actor: Workspa
       <aside className={cn("hidden shrink-0 overflow-hidden border-r border-border-default transition-[width] [transition-duration:var(--motion-fast)] lg:block", collapsed ? "w-[72px]" : "w-64")}><SidebarContent actor={actor} collapsed={collapsed} onToggle={toggleSidebar} /></aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center border-b border-border-default bg-surface px-4 lg:hidden">
-          <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent><SidebarContent actor={actor} /></SheetContent></Sheet>
+          <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent closeLabel="Close navigation"><SheetTitle className="sr-only">Workspace navigation</SheetTitle><SidebarContent actor={actor} /></SheetContent></Sheet>
           <BrandMark href="/students" compact />
         </header>
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">

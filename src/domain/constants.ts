@@ -8,8 +8,8 @@ export const DEMO_ORGANIZATION: Organization = {
 
 export const DEMO_STAFF: StaffUser[] = [
   { id: "usr_priya", organizationId: DEMO_ORGANIZATION.id, name: "Priya Nair", email: "priya@northstar.example", role: "owner", title: "Senior Consultant" },
-  { id: "usr_anjali", organizationId: DEMO_ORGANIZATION.id, name: "Anjali Desai", email: "anjali@northstar.example", role: "consultant", title: "Consultant" },
-  { id: "usr_rohan", organizationId: DEMO_ORGANIZATION.id, name: "Rohan Mehta", email: "rohan@northstar.example", role: "consultant", title: "Consultant" },
+  { id: "usr_anjali", organizationId: DEMO_ORGANIZATION.id, name: "Anjali Desai", email: "anjali@northstar.example", role: "member", title: "Consultant" },
+  { id: "usr_rohan", organizationId: DEMO_ORGANIZATION.id, name: "Rohan Mehta", email: "rohan@northstar.example", role: "member", title: "Consultant" },
 ];
 
 export const ACTIVE_STAFF = DEMO_STAFF[0];

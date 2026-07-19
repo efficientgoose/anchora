@@ -380,6 +380,16 @@ a[aria-disabled="true"] {
   to { transform: translateX(-100%); }
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

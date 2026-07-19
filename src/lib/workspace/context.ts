@@ -22,10 +22,10 @@ export type WorkspaceContextResult =
   | { status: "unassigned" }
   | { status: "error"; code: string };
 
-const staffRoles: StaffRole[] = ["owner", "admin", "consultant"];
-
-function isStaffRole(value: unknown): value is StaffRole {
-  return typeof value === "string" && staffRoles.includes(value as StaffRole);
+function staffRole(value: unknown): StaffRole | null {
+  if (value === "consultant") return "member";
+  if (value === "owner" || value === "admin" || value === "member") return value;
+  return null;
 }
 
 function errorCode(error: { code?: string } | null, fallback: string) {
@@ -44,7 +44,8 @@ export async function resolveWorkspaceContext(supabase: SupabaseClient, user: Us
   }
 
   if (!membershipResult.data) return { status: "unassigned" };
-  if (!isStaffRole(membershipResult.data.role) || typeof membershipResult.data.organization_id !== "string") {
+  const role = staffRole(membershipResult.data.role);
+  if (!role || typeof membershipResult.data.organization_id !== "string") {
     return { status: "error", code: "invalid_membership" };
   }
 
@@ -85,7 +86,7 @@ export async function resolveWorkspaceContext(supabase: SupabaseClient, user: Us
         fullName: profile.full_name,
         email: profile.email,
       },
-      membership: { role: membershipResult.data.role },
+      membership: { role },
     },
   };
 }
