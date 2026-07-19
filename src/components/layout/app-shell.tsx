@@ -4,13 +4,14 @@ import * as React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Clock3, LogOut, Menu, Plus, Settings, Users } from "lucide-react";
+import { BarChart3, Clock3, Info, LogOut, Menu, Plus, Settings, Users } from "lucide-react";
 import { BrandIcon, BrandMark } from "@/components/brand/brand-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { signOutAction } from "@/features/auth/actions";
+import type { StaffRole } from "@/domain/models";
 import { initials } from "@/domain/student-calculations";
+import { signOutAction } from "@/features/auth/actions";
 import { cn } from "@/lib/cn";
 
 const navItems = [
@@ -29,8 +30,15 @@ let sidebarFallback = false;
 export interface WorkspaceActor {
   name: string;
   email: string;
-  title: string;
+  role: StaffRole;
+  organizationName: string;
 }
+
+const roleLabels: Record<StaffRole, string> = {
+  owner: "Owner",
+  admin: "Admin",
+  consultant: "Consultant",
+};
 
 function readSidebarPreference() {
   try {
@@ -82,7 +90,12 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
               <SidebarToggleIcon collapsed />
             </span>
           </button>
-        ) : <BrandMark href="/students" />}
+        ) : (
+          <div className="min-w-0">
+            <BrandMark href="/students" />
+            <p className="ml-10 mt-0.5 truncate text-[11px] leading-4 text-text-muted" title={actor.organizationName}>{actor.organizationName}</p>
+          </div>
+        )}
         {!collapsed && onToggle && (
           <Button type="button" size="icon-sm" variant="secondary" className="text-text-muted shadow-none" onClick={onToggle} aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">
             <SidebarToggleIcon collapsed={false} />
@@ -120,7 +133,7 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
         ) : (
           <>
             <Avatar initials={initials(actor.name)} className="size-8" />
-            <div className="min-w-0 flex-1 leading-tight"><div className="truncate text-[13px] font-semibold text-text-primary">{actor.name}</div><div className="truncate text-[11px] leading-4 text-text-muted" title={actor.email}>{actor.title}</div></div>
+            <div className="min-w-0 flex-1 leading-tight"><div className="truncate text-[13px] font-semibold text-text-primary">{actor.name}</div><div className="truncate text-[11px] leading-4 text-text-muted" title={actor.email}>{roleLabels[actor.role]}</div></div>
             <form action={signOutAction}><Button type="submit" size="icon-sm" variant="ghost" className="text-text-muted" aria-label="Sign out"><LogOut /></Button></form>
           </>
         )}
@@ -129,7 +142,7 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
   );
 }
 
-export function AppShell({ actor, children }: { actor: WorkspaceActor; children: React.ReactNode }) {
+export function AppShell({ actor, children, demoData = false }: { actor: WorkspaceActor; children: React.ReactNode; demoData?: boolean }) {
   const collapsed = React.useSyncExternalStore(subscribeToSidebarPreference, readSidebarPreference, () => false);
   const toggleSidebar = React.useCallback(() => writeSidebarPreference(!collapsed), [collapsed]);
 
@@ -142,7 +155,17 @@ export function AppShell({ actor, children }: { actor: WorkspaceActor; children:
           <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent><SidebarContent actor={actor} /></SheetContent></Sheet>
           <BrandMark href="/students" compact />
         </header>
-        <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">{children}</main>
+        <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
+          {demoData && (
+            <div className="border-b border-accent-border bg-accent-soft/60 px-4 py-2.5 text-brand-gold-strong sm:px-6">
+              <div className="mx-auto flex max-w-[1440px] items-start gap-2 text-xs leading-5">
+                <Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+                <p>You’re viewing sample students. Changes are saved only in this browser during early access.</p>
+              </div>
+            </div>
+          )}
+          {children}
+        </main>
       </div>
     </div>
   );
