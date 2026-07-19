@@ -118,7 +118,22 @@ export function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-border-subtle"><div className="mx-auto flex max-w-[1140px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-7 text-[13px] leading-5 text-text-muted sm:px-7"><BrandMark compact /><span>© 2026 Anchora</span><div className="flex-1" /><a href="#product" className="hidden rounded-sm hover:text-text-primary sm:block">Product</a><Link href="/privacy" className="rounded-sm hover:text-text-primary">Privacy</Link><Link href="/terms" className="rounded-sm hover:text-text-primary">Terms</Link><Link href="/login" className="rounded-sm hover:text-text-primary">Log in</Link></div></footer>
+      <footer className="border-t border-border-subtle">
+        <div className="mx-auto max-w-[1140px] px-5 py-7 text-[13px] leading-5 text-text-muted sm:px-7">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <BrandMark compact />
+            <span>© 2026 Anchora</span>
+            <div className="flex-1" />
+            <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <a href="#product" className="hidden rounded-sm hover:text-text-primary sm:block">Product</a>
+              <Link href="/privacy" className="rounded-sm hover:text-text-primary">Privacy</Link>
+              <Link href="/terms" className="rounded-sm hover:text-text-primary">Terms</Link>
+              <Link href="/login" className="rounded-sm hover:text-text-primary">Log in</Link>
+            </nav>
+          </div>
+          <p className="mt-5 text-center text-xs">Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4 transition-colors hover:text-brand-gold-strong hover:decoration-brand-gold">Ajinkya Kale</a></p>
+        </div>
+      </footer>
     </div>
   );
 }
