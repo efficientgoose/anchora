@@ -2,10 +2,15 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppProviders } from "@/components/providers/app-providers";
+import {
+  SOCIAL_DESCRIPTION,
+  SOCIAL_IMAGE_ALT,
+  SOCIAL_IMAGE_PATH,
+  SOCIAL_IMAGE_SIZE,
+  SOCIAL_IMAGE_TYPE,
+  SOCIAL_TITLE,
+} from "@/lib/social-metadata";
 import "./globals.css";
-
-const socialTitle = "Anchora — Manage every application. Never miss a deadline.";
-const socialDescription = "Everything your consultancy needs to manage student applications.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tryanchora.com"),
@@ -16,13 +21,30 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://tryanchora.com",
     siteName: "Anchora",
-    title: socialTitle,
-    description: socialDescription,
+    title: SOCIAL_TITLE,
+    description: SOCIAL_DESCRIPTION,
+    images: [
+      {
+        url: SOCIAL_IMAGE_PATH,
+        width: SOCIAL_IMAGE_SIZE.width,
+        height: SOCIAL_IMAGE_SIZE.height,
+        alt: SOCIAL_IMAGE_ALT,
+        type: SOCIAL_IMAGE_TYPE,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: socialTitle,
-    description: socialDescription,
+    title: SOCIAL_TITLE,
+    description: SOCIAL_DESCRIPTION,
+    images: [
+      {
+        url: SOCIAL_IMAGE_PATH,
+        width: SOCIAL_IMAGE_SIZE.width,
+        height: SOCIAL_IMAGE_SIZE.height,
+        alt: SOCIAL_IMAGE_ALT,
+      },
+    ],
   },
   icons: {
     icon: [{ url: "/anchora-logo.svg", type: "image/svg+xml" }],
