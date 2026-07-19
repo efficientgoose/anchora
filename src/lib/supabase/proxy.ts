@@ -9,7 +9,7 @@ interface PendingCookie {
   options: CookieOptions;
 }
 
-const protectedPrefixes = ["/students", "/intakes", "/onboarding"];
+const protectedPrefixes = ["/students", "/intakes", "/team", "/onboarding"];
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

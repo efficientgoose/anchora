@@ -4,7 +4,7 @@ import * as React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Clock3, Info, LogOut, Menu, Plus, Settings, Users } from "lucide-react";
+import { BarChart3, Clock3, Info, LogOut, Menu, Plus, Settings, UserRoundCog, Users } from "lucide-react";
 import { BrandIcon, BrandMark } from "@/components/brand/brand-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { cn } from "@/lib/cn";
 const navItems = [
   { label: "Students", href: "/students", icon: Users, enabled: true },
   { label: "Add student", href: "/students/new", icon: Plus, enabled: true },
+  { label: "Team", href: "/team", icon: UserRoundCog, enabled: true, ownerOnly: true },
   { divider: true },
   { label: "Intakes", href: "/intakes", icon: Clock3, enabled: true },
   { label: "Reports", href: "#", icon: BarChart3, enabled: false },
@@ -106,6 +107,7 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
       <nav className={cn("flex-1 py-3", collapsed ? "px-2" : "px-2.5")} aria-label="Workspace navigation">
         {navItems.map((item, index) => {
           if ("divider" in item) return <div key={`divider-${index}`} className={cn("my-2.5 h-px bg-border-subtle", collapsed ? "mx-1" : "mx-2.5")} />;
+          if ("ownerOnly" in item && item.ownerOnly && actor.role !== "owner") return null;
           const active = item.enabled && (item.href === "/students" ? pathname === "/students" || (pathname !== "/students/new" && /^\/students\/[^/]+$/.test(pathname)) : pathname.startsWith(item.href));
           const Icon = item.icon;
           if (!item.enabled) return <span key={item.label} aria-disabled="true" title={`${item.label} — coming soon`} className={cn("my-0.5 flex min-h-10 cursor-default items-center rounded-control text-sm font-medium text-text-muted opacity-45", collapsed ? "justify-center px-0" : "gap-2.5 px-3")}><Icon aria-hidden="true" className="size-5" />{!collapsed && <>{item.label}<span className="sr-only"> — coming soon</span></>}</span>;
@@ -143,8 +145,10 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
 }
 
 export function AppShell({ actor, children, demoData = false }: { actor: WorkspaceActor; children: React.ReactNode; demoData?: boolean }) {
+  const pathname = usePathname();
   const collapsed = React.useSyncExternalStore(subscribeToSidebarPreference, readSidebarPreference, () => false);
   const toggleSidebar = React.useCallback(() => writeSidebarPreference(!collapsed), [collapsed]);
+  const showDemoDataNotice = demoData && (pathname.startsWith("/students") || pathname.startsWith("/intakes"));
 
   return (
     <div className="flex h-screen overflow-hidden bg-canvas">
@@ -156,7 +160,7 @@ export function AppShell({ actor, children, demoData = false }: { actor: Workspa
           <BrandMark href="/students" compact />
         </header>
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
-          {demoData && (
+          {showDemoDataNotice && (
             <div className="border-b border-accent-border bg-accent-soft/60 px-4 py-2.5 text-brand-gold-strong sm:px-6">
               <div className="mx-auto flex max-w-[1440px] items-start gap-2 text-xs leading-5">
                 <Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />

@@ -14,6 +14,7 @@ function isSupportedEmailType(value: string | null): value is SupportedEmailType
 function errorDestination(request: NextRequest, type: string | null) {
   if (type === "recovery") return new URL("/forgot-password?error=invalid_link", request.url);
   if (type === "signup") return new URL("/signup?error=invalid_link", request.url);
+  if (type === "invite") return new URL("/login?error=invalid_invitation", request.url);
   return new URL("/login?error=invalid_link", request.url);
 }
 
@@ -29,6 +30,15 @@ export async function GET(request: NextRequest) {
 
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
   if (error) return NextResponse.redirect(errorDestination(request, type));
+
+  if (type === "invite") {
+    const { data: acceptance, error: acceptanceError } = await supabase.rpc("accept_consultant_invitation");
+    if (acceptanceError || !Array.isArray(acceptance) || acceptance.length !== 1) {
+      console.error("[auth:accept-invitation]", { code: acceptanceError?.code ?? "unexpected_result" });
+      await supabase.auth.signOut({ scope: "local" });
+      return NextResponse.redirect(errorDestination(request, type));
+    }
+  }
 
   if (isPasswordSetupFlow(type)) {
     const cookieStore = await cookies();
