@@ -243,6 +243,7 @@ export function TeamPage({ directory }: { directory: TeamDirectory | null }) {
       <div className="page-container page-enter overflow-x-hidden">
         <PageHeader
           className="mb-5 border-b border-border-default pb-5"
+          actionClassName="ml-0 w-full shrink sm:ml-auto sm:w-auto sm:shrink-0"
           eyebrow="People & access"
           title="Team"
           description={directory ? <><span>Manage access to {directory.organizationName}.</span> <span className="whitespace-nowrap"><span className="tabular-nums font-medium text-text-secondary">{activeCount}</span> active · <span className="tabular-nums font-medium text-text-secondary">{pendingCount}</span> open invitations</span></> : "Workspace access information is temporarily unavailable."}

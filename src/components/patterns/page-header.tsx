@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/cn";
 
-export function PageHeader({ title, description, eyebrow, action, className }: { title: string; description?: React.ReactNode; eyebrow?: string; action?: React.ReactNode; className?: string }) {
+export function PageHeader({ title, description, eyebrow, action, className, actionClassName }: { title: string; description?: React.ReactNode; eyebrow?: string; action?: React.ReactNode; className?: string; actionClassName?: string }) {
   return (
     <header className={cn("flex flex-wrap items-start justify-between gap-4", className)}>
       <div className="min-w-0">
@@ -9,7 +9,7 @@ export function PageHeader({ title, description, eyebrow, action, className }: {
         <h1 className="type-page-title text-text-primary">{title}</h1>
         {description && <div className="mt-1 text-sm leading-[22px] text-text-muted">{description}</div>}
       </div>
-      {action && <div className="w-full sm:ml-auto sm:w-auto sm:shrink-0">{action}</div>}
+      {action && <div className={cn("ml-auto shrink-0", actionClassName)}>{action}</div>}
     </header>
   );
 }
