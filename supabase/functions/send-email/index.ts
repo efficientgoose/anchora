@@ -68,11 +68,17 @@ function recipientName(user: HookUser) {
   return typeof fullName === "string" && fullName.trim() ? fullName.trim() : undefined;
 }
 
-function plainTextEmail({ greetingName, intro, actionLabel, actionUrl, securityNote }: { greetingName?: string; intro: string; actionLabel: string; actionUrl: string; securityNote: string }) {
+function metadataText(user: HookUser, key: string) {
+  const value = user.user_metadata?.[key];
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function plainTextEmail({ greetingName, intro, actionLabel, actionUrl, securityNote, detailLabel, detailValue }: { greetingName?: string; intro: string; actionLabel: string; actionUrl: string; securityNote: string; detailLabel?: string; detailValue?: string }) {
   return [
     greetingName ? `Hi ${greetingName},` : "Hello,",
     "",
     intro,
+    detailLabel && detailValue ? `${detailLabel}: ${detailValue}` : "",
     "",
     `${actionLabel}: ${actionUrl}`,
     "",
@@ -85,9 +91,13 @@ function plainTextEmail({ greetingName, intro, actionLabel, actionUrl, securityN
 
 async function sendDelivery({ resend, payload, delivery, siteUrl, from, replyTo }: { resend: Resend; payload: SendEmailHookPayload; delivery: EmailDelivery; siteUrl: string; from: string; replyTo: string }) {
   const actionType = payload.email_data.email_action_type;
-  const copy = emailCopyFor(actionType);
+  const organizationName = metadataText(payload.user, "organization_name");
+  const inviterName = metadataText(payload.user, "invited_by_name");
+  const copy = emailCopyFor(actionType, { inviterName, organizationName });
   const actionUrl = confirmationUrl(siteUrl, delivery.tokenHash, actionType);
   const greetingName = recipientName(payload.user);
+  const detailLabel = actionType === "invite" && organizationName ? "CONSULTANCY" : undefined;
+  const detailValue = detailLabel ? organizationName : undefined;
   const element = React.createElement(AnchoraAuthEmail, {
     actionLabel: copy.actionLabel,
     actionUrl,
@@ -96,9 +106,11 @@ async function sendDelivery({ resend, payload, delivery, siteUrl, from, replyTo 
     preview: copy.preview,
     securityNote: copy.securityNote,
     title: copy.title,
+    detailLabel,
+    detailValue,
   });
   const html = await render(element);
-  const text = plainTextEmail({ greetingName, intro: copy.intro, actionLabel: copy.actionLabel, actionUrl, securityNote: copy.securityNote });
+  const text = plainTextEmail({ greetingName, intro: copy.intro, actionLabel: copy.actionLabel, actionUrl, securityNote: copy.securityNote, detailLabel, detailValue });
 
   const { error } = await resend.emails.send({
     from,

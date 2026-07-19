@@ -14,7 +14,7 @@ import { ResendConfirmationForm } from "./resend-confirmation-form";
 
 const initialSignInState: SignInState = { status: "idle" };
 
-export function LoginPage({ nextPath, configurationMissing = false, invalidLink = false, googleAuthError = false }: { nextPath: string; configurationMissing?: boolean; invalidLink?: boolean; googleAuthError?: boolean }) {
+export function LoginPage({ nextPath, configurationMissing = false, invalidLink = false, invalidInvitation = false, googleAuthError = false }: { nextPath: string; configurationMissing?: boolean; invalidLink?: boolean; invalidInvitation?: boolean; googleAuthError?: boolean }) {
   const [state, formAction, pending] = React.useActionState(signInAction, initialSignInState);
 
   return (
@@ -26,6 +26,7 @@ export function LoginPage({ nextPath, configurationMissing = false, invalidLink 
     >
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Sign-in is not configured">Add the Supabase environment settings before using this workspace.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That link has expired">Sign in if your account is ready, or ask for a fresh invitation.</Notice>}
+      {invalidInvitation && <Notice tone="warning" className="mb-5" title="That invitation is no longer valid">Ask the consultancy owner to resend your invitation from their Team page.</Notice>}
       {googleAuthError && <Notice tone="warning" className="mb-5" title="Google sign-in did not finish">Try again, or continue with your email and password.</Notice>}
       {state.status === "error" && state.message && <Notice key={state.message} tone="danger" className="mb-5" role="alert">{state.message}</Notice>}
       {state.status === "unconfirmed" && state.message && (

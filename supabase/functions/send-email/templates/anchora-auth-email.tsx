@@ -23,6 +23,11 @@ interface EmailCopy {
   securityNote: string;
 }
 
+interface EmailCopyContext {
+  inviterName?: string;
+  organizationName?: string;
+}
+
 const emailCopy: Record<string, EmailCopy> = {
   signup: {
     subject: "Confirm your Anchora account",
@@ -83,7 +88,18 @@ const fallbackCopy: EmailCopy = {
   securityNote: "If you did not request this action, you can safely ignore this email.",
 };
 
-export function emailCopyFor(actionType: string) {
+export function emailCopyFor(actionType: string, context: EmailCopyContext = {}) {
+  if (actionType === "invite" && context.organizationName) {
+    const inviter = context.inviterName ? `${context.inviterName} invited you` : "You have been invited";
+    return {
+      subject: `Join ${context.organizationName} on Anchora`,
+      preview: `${inviter} to join ${context.organizationName} on Anchora.`,
+      title: `Join ${context.organizationName}.`,
+      intro: `${inviter} to join the ${context.organizationName} consultancy workspace. Accept the invitation, then choose a password to secure your Anchora account.`,
+      actionLabel: "Accept invitation",
+      securityNote: "If you were not expecting this invitation, you can ignore this email or reply to let us know.",
+    } satisfies EmailCopy;
+  }
   return emailCopy[actionType] ?? fallbackCopy;
 }
 
@@ -95,9 +111,11 @@ export interface AnchoraAuthEmailProps {
   actionUrl: string;
   securityNote: string;
   greetingName?: string;
+  detailLabel?: string;
+  detailValue?: string;
 }
 
-export function AnchoraAuthEmail({ preview, title, intro, actionLabel, actionUrl, securityNote, greetingName }: AnchoraAuthEmailProps) {
+export function AnchoraAuthEmail({ preview, title, intro, actionLabel, actionUrl, securityNote, greetingName, detailLabel, detailValue }: AnchoraAuthEmailProps) {
   return (
     <Html lang="en">
       <Head />
@@ -115,6 +133,12 @@ export function AnchoraAuthEmail({ preview, title, intro, actionLabel, actionUrl
             <Heading as="h1" style={heading}>{title}</Heading>
             <Text style={greeting}>{greetingName ? `Hi ${greetingName},` : "Hello,"}</Text>
             <Text style={paragraph}>{intro}</Text>
+            {detailLabel && detailValue && (
+              <Section style={detailCard}>
+                <Text style={detailLabelStyle}>{detailLabel}</Text>
+                <Text style={detailValueStyle}>{detailValue}</Text>
+              </Section>
+            )}
             <Button href={actionUrl} style={button}>{actionLabel}</Button>
 
             <Text style={fallbackLabel}>Button not working? Copy this secure link:</Text>
@@ -146,6 +170,9 @@ const eyebrow = { margin: "0 0 10px", color: "#a16207", fontSize: "11px", fontWe
 const heading = { margin: "0", color: "#18181b", fontSize: "30px", lineHeight: "1.2", letterSpacing: "-0.8px" };
 const greeting = { margin: "26px 0 0", color: "#18181b", fontSize: "15px", lineHeight: "24px" };
 const paragraph = { margin: "10px 0 0", color: "#475569", fontSize: "15px", lineHeight: "24px" };
+const detailCard = { margin: "22px 0 0", borderLeft: "3px solid #eab308", borderRadius: "0 8px 8px 0", backgroundColor: "#f8fafc", padding: "14px 16px" };
+const detailLabelStyle = { margin: "0", color: "#a16207", fontSize: "10px", fontWeight: "700", letterSpacing: "1px" };
+const detailValueStyle = { margin: "4px 0 0", color: "#18181b", fontSize: "15px", fontWeight: "700", lineHeight: "22px" };
 const button = { display: "inline-block", margin: "26px 0 22px", borderRadius: "8px", backgroundColor: "#18181b", color: "#ffffff", fontSize: "14px", fontWeight: "700", lineHeight: "48px", padding: "0 22px", textDecoration: "none" };
 const fallbackLabel = { margin: "0 0 6px", color: "#64748b", fontSize: "12px", lineHeight: "18px" };
 const fallbackLink = { color: "#475569", fontSize: "12px", lineHeight: "18px", textDecoration: "underline", wordBreak: "break-all" as const };

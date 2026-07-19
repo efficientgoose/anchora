@@ -66,6 +66,7 @@ For local development, copy `.env.example` to `.env.local`:
 NEXT_PUBLIC_SUPABASE_URL=https://nvkimcimfzhirbayoggn.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SUPABASE_SECRET_KEY=your_server_only_secret_key
 ```
 
 In Vercel Production, configure:
@@ -74,9 +75,10 @@ In Vercel Production, configure:
 NEXT_PUBLIC_SUPABASE_URL=https://nvkimcimfzhirbayoggn.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 NEXT_PUBLIC_SITE_URL=https://tryanchora.com
+SUPABASE_SECRET_KEY=your_server_only_secret_key
 ```
 
-The Supabase publishable key is designed for public clients. Never add a Supabase secret key or service-role key to a `NEXT_PUBLIC_` variable.
+The Supabase publishable key is designed for public clients. The secret key powers owner-created consultant invitations and must exist only in trusted server environments. Never add a Supabase secret key or service-role key to a `NEXT_PUBLIC_` variable, browser code, logs, or screenshots.
 
 This project intentionally uses one Supabase project. Development and preview activity therefore affects the same authentication user list and rate limits as production. Production email links always return to `tryanchora.com`.
 
@@ -127,6 +129,7 @@ In **Authentication > Providers > Email**:
 - Enable email signup.
 - Require email confirmation.
 - Set the minimum password length to 8.
+- Set **Email OTP expiration** to `86400` seconds so invitation, signup, and recovery links remain valid for 24 hours.
 - Keep arbitrary password-complexity rules disabled for this release.
 - Keep anonymous signup disabled.
 - Keep CAPTCHA disabled for the friend-testing release.
@@ -215,13 +218,15 @@ Users can choose **Continue with Google** from `/login` or `/signup`. A first-ti
 
 Users open `/signup`, provide their name, email, and password, then confirm the branded email. Confirmation establishes their session and opens `/students`.
 
-### Supabase invitation
+### Consultancy invitation
 
-Use **Authentication > Users > Invite user**. The invite receives Anchora's branded invitation, establishes a short-lived setup session, and asks the user to choose a password before opening the workspace.
+An Anchora owner opens **Team**, enters the consultant's full name and email, and sends the invitation from the application. The database-bound flow records the target consultancy before Supabase sends the branded email. After verification, Anchora grants the Consultant role and asks the recipient to choose a password.
+
+Do not use **Authentication > Users > Invite user** for consultancy access. Dashboard invitations do not contain Anchora's organization record and are rejected safely at confirmation.
 
 ### Direct dashboard creation
 
-Administrators may still create a confirmed user with a password directly in Supabase. That user can sign in immediately. `full_name` can be stored in user metadata for display, but user metadata must never be used to grant authorization.
+Administrators may still create a confirmed user with a password directly in Supabase. That user can sign in immediately and create a new owner consultancy through onboarding; it does not add the user to an existing consultancy. `full_name` can be stored in user metadata for display, but user metadata must never be used to grant authorization.
 
 ## 10. Deployment checkpoints
 
@@ -233,7 +238,7 @@ Deploy and observe one checkpoint before moving to the next:
 4. **Public signup:** signup, confirmation, unconfirmed-login handling, and resend confirmation.
 5. **Google sign-in:** controlled test users, new account, returning account, same-email linking, cancellation, and safe redirect checks.
 6. **Password recovery:** request, callback, new password, and workspace access.
-7. **Administrator invitation:** invitation, password setup, and workspace access.
+7. **Consultant invitation:** apply the invitation migration, add the production-only Supabase secret, redeploy the Send Email Hook, set the 24-hour OTP expiry, then verify owner invite, resend, password setup, role, and workspace access.
 
 At each checkpoint, monitor Supabase Auth logs, Edge Function logs, Resend delivery/bounce/suppression events, and Vercel callback errors for at least 24 hours with a small group.
 
@@ -252,7 +257,9 @@ If the Send Email Hook fails, disable public signup and recovery entry points, d
 - Link Google to an existing confirmed email/password account with the same verified email.
 - Cancel Google consent and confirm the login page shows a neutral retry message.
 - Confirm both local and production OAuth callbacks are allow-listed without a production wildcard.
-- Invite a user from Supabase, choose a password, and open the workspace.
+- Invite a new consultant from the owner's Team page, choose a password, and confirm the consultant opens the same consultancy workspace without seeing Team navigation.
+- Resend a pending invitation after 60 seconds and confirm the fresh link replaces the previous one.
+- Confirm a known existing account produces an owner-facing error and no pending Team row.
 - Create a confirmed password user directly in Supabase and sign in normally.
 - Test authentication emails on desktop and mobile with images enabled and disabled.
 - Verify replies to authentication emails reach the Cloudflare forwarding destination.
