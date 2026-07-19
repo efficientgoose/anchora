@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import type { StaffRole } from "@/domain/models";
 import { getAuthConfirmationUrl } from "@/lib/site-url";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -21,30 +22,32 @@ interface PreparedInvitation {
   inviter_name: string;
   recipient_name: string;
   recipient_email: string;
+  recipient_role: StaffRole;
 }
 
-export interface InviteConsultantState {
+export interface InviteMemberState {
   status: "idle" | "error" | "success";
   message?: string;
   fullName?: string;
   email?: string;
-  fieldErrors?: { fullName?: string; email?: string };
+  fieldErrors?: { fullName?: string; email?: string; role?: string };
 }
 
-export interface ResendInvitationState {
+export interface ResendMemberInvitationState {
   status: "idle" | "error" | "success";
   message?: string;
   invitationId?: string;
 }
 
 const invitationSchema = z.object({
-  fullName: z.string().trim().min(2, "Enter the consultant's full name.").max(100, "Keep the name under 100 characters."),
+  fullName: z.string().trim().min(2, "Enter the member's full name.").max(100, "Keep the name under 100 characters."),
   email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  role: z.enum(["owner", "admin", "member"], { message: "Choose a valid access level." }),
 });
 
 const invitationIdSchema = z.string().uuid();
 
-function firstFieldError(error: z.ZodError, field: "fullName" | "email") {
+function firstFieldError(error: z.ZodError, field: "fullName" | "email" | "role") {
   return error.issues.find((issue) => issue.path[0] === field)?.message;
 }
 
@@ -64,11 +67,13 @@ function rpcMessage(error: ErrorLike) {
     case "invitation_processing":
       return "This invitation is already being sent. Wait a moment and refresh the page.";
     case "daily_invitation_limit":
-      return "This consultancy has reached its limit of 5 invitation emails in 24 hours.";
+      return "This workspace has reached its limit of 5 invitation emails in 24 hours.";
     case "resend_cooldown":
       return "Wait 60 seconds after the previous email before resending.";
     case "invitation_not_found":
       return "This invitation is no longer available.";
+    case "invalid_role":
+      return "Choose a valid access level.";
     default:
       return "We could not prepare this invitation. Try again shortly.";
   }
@@ -84,13 +89,15 @@ function providerMessage(error: ErrorLike) {
 
 function preparedRow(data: unknown): PreparedInvitation | null {
   if (!Array.isArray(data) || data.length !== 1) return null;
-  const row = data[0] as Partial<PreparedInvitation>;
+  const row = data[0] as Omit<Partial<PreparedInvitation>, "recipient_role"> & { recipient_role?: string };
   const values = [row.invitation_id, row.delivery_id, row.organization_id, row.organization_name, row.inviter_name, row.recipient_name, row.recipient_email];
-  return values.every((value) => typeof value === "string" && value.length > 0) ? row as PreparedInvitation : null;
+  const recipientRole = row.recipient_role === "consultant" ? "member" : row.recipient_role;
+  const validRole = recipientRole === "owner" || recipientRole === "admin" || recipientRole === "member";
+  return values.every((value) => typeof value === "string" && value.length > 0) && validRole ? { ...row, recipient_role: recipientRole } as PreparedInvitation : null;
 }
 
 async function failDelivery(supabase: NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>, invitation: PreparedInvitation) {
-  const { error } = await supabase.rpc("fail_consultant_invitation_delivery", {
+  const { error } = await supabase.rpc("fail_member_invitation_delivery", {
     p_delivery_id: invitation.delivery_id,
     p_invitation_id: invitation.invitation_id,
   });
@@ -104,7 +111,7 @@ async function sendPreparedInvitation(
   const admin = createSupabaseAdminClient();
   if (!admin) {
     await failDelivery(supabase, invitation);
-    return { ok: false as const, message: "Consultant invitations are not configured for this environment." };
+    return { ok: false as const, message: "Member invitations are not configured for this environment." };
   }
 
   const { data, error } = await admin.auth.admin.inviteUserByEmail(invitation.recipient_email, {
@@ -113,6 +120,7 @@ async function sendPreparedInvitation(
       full_name: invitation.recipient_name,
       invited_by_name: invitation.inviter_name,
       organization_name: invitation.organization_name,
+      workspace_role: invitation.recipient_role,
     },
     redirectTo: getAuthConfirmationUrl(),
   });
@@ -128,8 +136,8 @@ async function sendPreparedInvitation(
     p_delivery_id: invitation.delivery_id,
     p_invitation_id: invitation.invitation_id,
   };
-  let completion = await supabase.rpc("complete_consultant_invitation_delivery", completionArgs);
-  if (completion.error) completion = await supabase.rpc("complete_consultant_invitation_delivery", completionArgs);
+  let completion = await supabase.rpc("complete_member_invitation_delivery", completionArgs);
+  if (completion.error) completion = await supabase.rpc("complete_member_invitation_delivery", completionArgs);
 
   if (completion.error) {
     console.error("[team:invite-complete]", { code: completion.error.code ?? "unknown", invitationId: invitation.invitation_id });
@@ -147,13 +155,14 @@ async function authenticatedClient() {
   return supabase;
 }
 
-export async function inviteConsultantAction(
-  _previousState: InviteConsultantState,
+export async function inviteMemberAction(
+  _previousState: InviteMemberState,
   formData: FormData,
-): Promise<InviteConsultantState> {
+): Promise<InviteMemberState> {
   const fullName = typeof formData.get("fullName") === "string" ? String(formData.get("fullName")) : "";
   const email = typeof formData.get("email") === "string" ? String(formData.get("email")) : "";
-  const parsed = invitationSchema.safeParse({ fullName, email });
+  const role = typeof formData.get("role") === "string" ? String(formData.get("role")) : "";
+  const parsed = invitationSchema.safeParse({ fullName, email, role });
 
   if (!parsed.success) {
     return {
@@ -164,16 +173,18 @@ export async function inviteConsultantAction(
       fieldErrors: {
         fullName: firstFieldError(parsed.error, "fullName"),
         email: firstFieldError(parsed.error, "email"),
+        role: firstFieldError(parsed.error, "role"),
       },
     };
   }
 
   const supabase = await authenticatedClient();
-  if (!supabase) return { status: "error", message: "Consultant invitations are not configured for this environment.", fullName, email };
+  if (!supabase) return { status: "error", message: "Member invitations are not configured for this environment.", fullName, email };
 
-  const { data, error } = await supabase.rpc("prepare_consultant_invitation", {
+  const { data, error } = await supabase.rpc("prepare_member_invitation", {
     p_email: parsed.data.email,
     p_full_name: parsed.data.fullName,
+    p_role: parsed.data.role,
   });
   if (error) return { status: "error", message: rpcMessage(error), fullName, email };
 
@@ -187,17 +198,17 @@ export async function inviteConsultantAction(
   return { status: "success", message: `Invitation sent to ${invitation.recipient_email}.` };
 }
 
-export async function resendConsultantInvitationAction(
-  _previousState: ResendInvitationState,
+export async function resendMemberInvitationAction(
+  _previousState: ResendMemberInvitationState,
   formData: FormData,
-): Promise<ResendInvitationState> {
+): Promise<ResendMemberInvitationState> {
   const parsedId = invitationIdSchema.safeParse(formData.get("invitationId"));
   if (!parsedId.success) return { status: "error", message: "This invitation is no longer available." };
 
   const supabase = await authenticatedClient();
-  if (!supabase) return { status: "error", message: "Consultant invitations are not configured for this environment.", invitationId: parsedId.data };
+  if (!supabase) return { status: "error", message: "Member invitations are not configured for this environment.", invitationId: parsedId.data };
 
-  const { data, error } = await supabase.rpc("prepare_consultant_invitation_resend", {
+  const { data, error } = await supabase.rpc("prepare_member_invitation_resend", {
     p_invitation_id: parsedId.data,
   });
   if (error) return { status: "error", message: rpcMessage(error), invitationId: parsedId.data };

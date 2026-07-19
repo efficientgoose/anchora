@@ -12,7 +12,7 @@ export interface TeamInvitation {
   id: string;
   fullName: string;
   email: string;
-  role: "consultant";
+  role: StaffRole;
   status: "pending" | "expired";
   sentAt: string;
   expiresAt: string;

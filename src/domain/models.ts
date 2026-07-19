@@ -1,4 +1,4 @@
-export type StaffRole = "owner" | "admin" | "consultant";
+export type StaffRole = "owner" | "admin" | "member";
 export type TaskStatus = "not_started" | "in_progress" | "blocked" | "done";
 export type RiskLevel = "overdue" | "at_risk" | "on_track";
 export type StudentSortField = "risk" | "name" | "intake" | "consultant";

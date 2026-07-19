@@ -1,6 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import type { StaffRole } from "@/domain/models";
 import type { TeamDirectory } from "./types";
+
+const staffRoleSchema = z.enum(["owner", "admin", "member", "consultant"]).transform<StaffRole>((role) => role === "consultant" ? "member" : role);
 
 const teamDirectorySchema = z.object({
   organizationId: z.string().uuid(),
@@ -9,14 +12,14 @@ const teamDirectorySchema = z.object({
     id: z.string().uuid(),
     fullName: z.string().min(1),
     email: z.string().email(),
-    role: z.enum(["owner", "admin", "consultant"]),
+    role: staffRoleSchema,
     joinedAt: z.string(),
   })),
   invitations: z.array(z.object({
     id: z.string().uuid(),
     fullName: z.string().min(1),
     email: z.string().email(),
-    role: z.literal("consultant"),
+    role: staffRoleSchema,
     status: z.enum(["pending", "expired"]),
     sentAt: z.string(),
     expiresAt: z.string(),

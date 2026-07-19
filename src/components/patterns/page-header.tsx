@@ -9,7 +9,7 @@ export function PageHeader({ title, description, eyebrow, action, className }: {
         <h1 className="type-page-title text-text-primary">{title}</h1>
         {description && <div className="mt-1 text-sm leading-[22px] text-text-muted">{description}</div>}
       </div>
-      {action && <div className="ml-auto shrink-0">{action}</div>}
+      {action && <div className="w-full sm:ml-auto sm:w-auto sm:shrink-0">{action}</div>}
     </header>
   );
 }

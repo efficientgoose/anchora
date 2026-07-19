@@ -73,6 +73,13 @@ function metadataText(user: HookUser, key: string) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
+function accessLevelLabel(value: string | undefined) {
+  if (value === "owner") return "Owner";
+  if (value === "admin") return "Admin";
+  if (value === "member") return "Member";
+  return undefined;
+}
+
 function plainTextEmail({ greetingName, intro, actionLabel, actionUrl, securityNote, detailLabel, detailValue }: { greetingName?: string; intro: string; actionLabel: string; actionUrl: string; securityNote: string; detailLabel?: string; detailValue?: string }) {
   return [
     greetingName ? `Hi ${greetingName},` : "Hello,",
@@ -93,11 +100,12 @@ async function sendDelivery({ resend, payload, delivery, siteUrl, from, replyTo 
   const actionType = payload.email_data.email_action_type;
   const organizationName = metadataText(payload.user, "organization_name");
   const inviterName = metadataText(payload.user, "invited_by_name");
+  const accessLevel = accessLevelLabel(metadataText(payload.user, "workspace_role"));
   const copy = emailCopyFor(actionType, { inviterName, organizationName });
   const actionUrl = confirmationUrl(siteUrl, delivery.tokenHash, actionType);
   const greetingName = recipientName(payload.user);
-  const detailLabel = actionType === "invite" && organizationName ? "CONSULTANCY" : undefined;
-  const detailValue = detailLabel ? organizationName : undefined;
+  const detailLabel = actionType === "invite" && organizationName ? "WORKSPACE" : undefined;
+  const detailValue = detailLabel ? `${organizationName}${accessLevel ? ` · ${accessLevel} access` : ""}` : undefined;
   const element = React.createElement(AnchoraAuthEmail, {
     actionLabel: copy.actionLabel,
     actionUrl,
