@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { resolveWorkspaceContext } from "@/lib/workspace/context";
 
 export const dynamic = "force-dynamic";
 
@@ -11,10 +12,24 @@ export default async function WorkspaceLayout({ children }: { children: React.Re
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) redirect("/login");
 
-  const metadata = data.user.user_metadata as { full_name?: unknown; name?: unknown; title?: unknown };
-  const email = data.user.email ?? "Workspace member";
-  const name = typeof metadata.full_name === "string" ? metadata.full_name : typeof metadata.name === "string" ? metadata.name : email.split("@")[0];
-  const title = typeof metadata.title === "string" ? metadata.title : "Workspace member";
+  const workspace = await resolveWorkspaceContext(supabase, data.user);
+  if (workspace.status === "unassigned") redirect("/onboarding");
+  if (workspace.status === "error") {
+    console.error("[workspace:resolve-layout]", { code: workspace.code });
+    redirect("/onboarding");
+  }
 
-  return <AppShell actor={{ name, email, title }}>{children}</AppShell>;
+  return (
+    <AppShell
+      actor={{
+        name: workspace.context.profile.fullName,
+        email: workspace.context.profile.email,
+        role: workspace.context.membership.role,
+        organizationName: workspace.context.organization.name,
+      }}
+      demoData
+    >
+      {children}
+    </AppShell>
+  );
 }
