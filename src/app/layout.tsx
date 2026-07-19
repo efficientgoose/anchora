@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://tryanchora.com"),
   title: { default: "Anchora", template: "%s · Anchora" },
   description: "Study-abroad operations, kept on track.",
+  icons: {
+    icon: [{ url: "/anchora-logo.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

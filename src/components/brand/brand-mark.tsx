@@ -6,12 +6,13 @@ export function BrandIcon({ compact = false, className }: { compact?: boolean; c
   return (
     <span className={cn("relative flex shrink-0 items-center justify-center overflow-hidden", compact ? "size-6" : "size-8", className)}>
       <Image
-        src="/anchora-logo.png"
+        src="/anchora-logo.svg"
         alt=""
         width={32}
         height={32}
         sizes="32px"
         aria-hidden="true"
+        unoptimized
         className="size-full scale-[1.42] object-contain"
       />
     </span>

@@ -30,7 +30,7 @@ const emailCopy: Record<string, EmailCopy> = {
     title: "Your workspace is waiting.",
     intro: "Confirm your email address to finish creating your Anchora account and open the student workspace.",
     actionLabel: "Confirm my email",
-    securityNote: "If you did not create an Anchora account, you can safely ignore this email.",
+    securityNote: "Didn't create an Anchora account? Ignore this email.",
   },
   invite: {
     subject: "You are invited to Anchora",
