@@ -44,8 +44,8 @@ export function LandingPage() {
           <div className="relative mx-auto grid max-w-[1140px] items-center gap-14 px-5 py-16 sm:px-7 lg:grid-cols-[.95fr_1.05fr] lg:py-24">
             <div className="page-enter">
               <div className="mb-6 inline-flex min-h-8 items-center gap-2 rounded-full border border-accent-border bg-accent-soft px-3 text-xs font-semibold text-brand-ink"><span aria-hidden="true" className="size-1.5 rounded-full bg-brand-gold-strong" />Built for study-abroad consultancies</div>
-              <h1 className="max-w-[540px] text-[42px] font-bold leading-[1.06] tracking-[-.04em] text-brand-ink sm:text-5xl">Every student journey, under control.</h1>
-              <p className="mt-5 max-w-[500px] text-[17px] leading-[1.62] text-text-secondary">Anchora replaces WhatsApp threads and tangled spreadsheets with one precise workspace. Consultants see who needs attention today, and students always know their next step.</p>
+              <h1 className="max-w-[540px] text-[42px] font-bold leading-[1.06] tracking-[-.04em] text-brand-ink sm:text-5xl">Manage every application. Never miss a deadline.</h1>
+              <p className="mt-5 max-w-[500px] text-[17px] leading-[1.62] text-text-secondary">Replace WhatsApp threads and messy spreadsheets with one workspace. See who needs attention today and keep every student moving forward.</p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button asChild size="lg"><Link href="/signup">Get started <ArrowRight /></Link></Button>
                 <Button asChild variant="secondary" size="lg"><a href="#how">See how it works</a></Button>
