@@ -17,7 +17,7 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
         <div className="mx-auto flex h-16 max-w-[1040px] items-center px-5 sm:px-7">
           <BrandMark />
           <div className="flex-1" />
-          <Link href="/" className="inline-flex shrink-0 items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary">
+          <Link href="/" className="link-hover-gold inline-flex shrink-0 items-center gap-2 text-sm font-medium text-text-secondary">
             <ArrowLeft aria-hidden="true" className="size-4" />
             <span className="hidden sm:inline">Back to Anchora</span>
             <span className="sm:hidden">Back</span>
@@ -41,7 +41,7 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
             <nav aria-label={`${title} sections`} className="sticky top-8 border-l border-border-default pl-5">
               <div className="type-micro mb-3 text-text-muted">On this page</div>
               <ol className="space-y-2.5 text-xs leading-5 text-text-secondary">
-                {sections.map((section, index) => <li key={section.title}><a href={`#section-${index + 1}`} className="hover:text-text-primary">{section.title}</a></li>)}
+                {sections.map((section, index) => <li key={section.title}><a href={`#section-${index + 1}`} className="link-hover-gold">{section.title}</a></li>)}
               </ol>
             </nav>
           </aside>
@@ -73,9 +73,9 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
           <BrandMark compact />
           <span>© 2026 Anchora</span>
           <div className="flex-1" />
-          <Link href="/privacy" className="hover:text-text-primary">Privacy</Link>
-          <Link href="/terms" className="hover:text-text-primary">Terms</Link>
-          <a href="mailto:hello@tryanchora.com" className="hover:text-text-primary">hello@tryanchora.com</a>
+          <Link href="/privacy" className="link-hover-gold">Privacy</Link>
+          <Link href="/terms" className="link-hover-gold">Terms</Link>
+          <a href="mailto:hello@tryanchora.com" className="link-hover-gold">hello@tryanchora.com</a>
         </div>
       </footer>
     </div>

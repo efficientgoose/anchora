@@ -99,7 +99,7 @@ export function DesignSystemPage() {
 
       <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] overflow-x-hidden lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="print-hidden hidden border-r border-border-default px-5 py-8 lg:block">
-          <nav aria-label="Design system sections" className="sticky top-24 space-y-1">{nav.map(([href, label], index) => <a key={href} href={`#${href}`} className="flex min-h-9 items-center gap-3 rounded-control px-3 text-[13px] font-medium text-text-secondary hover:bg-surface-muted hover:text-text-primary"><span className="tabular-nums w-4 text-[10px] text-text-muted">{String(index + 1).padStart(2, "0")}</span>{label}</a>)}</nav>
+          <nav aria-label="Design system sections" className="sticky top-24 space-y-1">{nav.map(([href, label], index) => <a key={href} href={`#${href}`} className="link-hover-gold flex min-h-9 items-center gap-3 rounded-control px-3 text-[13px] font-medium text-text-secondary hover:bg-surface-muted"><span className="tabular-nums w-4 text-[10px] text-text-muted">{String(index + 1).padStart(2, "0")}</span>{label}</a>)}</nav>
         </aside>
 
         <main id="design-system-content" tabIndex={-1} className="min-w-0 max-w-full overflow-x-hidden outline-none">
@@ -204,7 +204,7 @@ export function DesignSystemPage() {
               </div>
             </section>
 
-            <footer className="border-t border-border-default bg-surface-inverse px-5 py-10 text-text-inverse sm:px-10 lg:px-16"><div className="flex flex-wrap items-center gap-4"><BrandMark className="text-text-inverse" /><span className="type-micro text-brand-gold">Design System 1.0</span><div className="flex-1" /><span className="text-xs text-border-strong">Anchora · Application control tower</span></div></footer>
+            <footer className="border-t border-border-default bg-surface-inverse px-5 py-10 text-text-inverse sm:px-10 lg:px-16"><div className="flex flex-wrap items-center gap-4"><BrandMark className="link-hover-gold-inverse text-text-inverse" /><span className="type-micro text-brand-gold">Design System 1.0</span><div className="flex-1" /><span className="text-xs text-border-strong">Anchora · Application control tower</span></div></footer>
           </div>
         </main>
       </div>

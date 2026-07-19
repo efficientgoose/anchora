@@ -21,7 +21,7 @@ export function BrandIcon({ compact = false, className }: { compact?: boolean; c
 
 export function BrandMark({ compact = false, showName = true, className, href = "/" }: { compact?: boolean; showName?: boolean; className?: string; href?: string }) {
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-2 rounded-sm text-brand-ink", className)} aria-label="Anchora home">
+    <Link href={href} className={cn("link-hover-gold inline-flex items-center gap-2 rounded-sm text-brand-ink", className)} aria-label="Anchora home">
       <BrandIcon compact={compact} />
       {showName && <span className={cn("font-semibold tracking-[-.025em]", compact ? "text-[13px]" : "text-[18px]")}>Anchora</span>}
     </Link>

@@ -21,7 +21,7 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
 
   if (state.status === "success" && state.email) {
     return (
-      <AuthShell eyebrow="Secure your workspace" title="One more step" description="Confirm your email before Anchora opens the student workspace." footer={<>Need to use a different address? <a href="/signup" className="font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold">Start again</a></>}>
+      <AuthShell eyebrow="Secure your workspace" title="One more step" description="Confirm your email before Anchora opens the student workspace." footer={<>Need to use a different address? <a href="/signup" className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">Start again</a></>}>
         <ConfirmationPending email={state.email} />
       </AuthShell>
     );
@@ -32,7 +32,7 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
       eyebrow="Start with Anchora"
       title="Create your workspace"
       description="Get a complete demo workspace and see how Anchora keeps every student journey moving."
-      footer={<>Already have an account? <Link href="/login" className="font-semibold text-text-primary underline decoration-border-strong underline-offset-4 hover:decoration-brand-gold">Sign in</Link></>}
+      footer={<>Already have an account? <Link href="/login" className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">Sign in</Link></>}
     >
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Signup is not configured">Add the Supabase environment settings before creating an account.</Notice>}
       {invalidLink && <Notice tone="warning" className="mb-5" title="That confirmation link has expired">Enter your details again or resend confirmation from the sign-in page.</Notice>}

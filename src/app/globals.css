@@ -163,6 +163,21 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+.link-hover-gold {
+  --link-hover-color: var(--brand-gold-strong);
+  transition-duration: var(--motion-fast);
+  transition-property: color, text-decoration-color;
+}
+
+.link-hover-gold-inverse {
+  --link-hover-color: var(--brand-gold);
+}
+
+.link-hover-gold:hover {
+  color: var(--link-hover-color);
+  text-decoration-color: var(--brand-gold);
+}
+
 :is(a[href], button, select, summary, [role="button"], input[type="checkbox"], input[type="radio"], label[for]) {
   cursor: pointer;
 }

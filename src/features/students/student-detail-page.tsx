@@ -78,8 +78,8 @@ export function StudentDetailPage({ studentId }: { studentId: string }) {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-3"><h1 className="text-[22px] font-semibold leading-7 tracking-[-.02em] text-text-primary">{student.name}</h1><StatusBadge risk={risk} /></div>
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[13px] leading-5 text-text-muted">
-              <a href={`mailto:${student.email}`} className="flex items-center gap-1.5 rounded-sm hover:text-text-primary hover:underline"><Mail aria-hidden="true" className="size-3.5" />{student.email}</a>
-              <a href={`tel:${student.phone}`} className="flex items-center gap-1.5 rounded-sm hover:text-text-primary hover:underline"><Phone aria-hidden="true" className="size-3.5" />{student.phone}</a>
+              <a href={`mailto:${student.email}`} className="link-hover-gold flex items-center gap-1.5 rounded-sm hover:underline"><Mail aria-hidden="true" className="size-3.5" />{student.email}</a>
+              <a href={`tel:${student.phone}`} className="link-hover-gold flex items-center gap-1.5 rounded-sm hover:underline"><Phone aria-hidden="true" className="size-3.5" />{student.phone}</a>
             </div>
           </div>
           <Button asChild variant="secondary"><Link href={`/portal/${student.id}`}>View student portal <ArrowUpRight /></Link></Button>
