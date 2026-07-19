@@ -101,7 +101,7 @@ export async function createSocialImage() {
           style={{
             display: "flex",
             flexDirection: "column",
-            marginTop: 76,
+            marginTop: 92,
             maxWidth: 970,
             position: "relative",
           }}
@@ -119,10 +119,10 @@ export async function createSocialImage() {
           </span>
           <span
             style={{
-              fontSize: 68,
+              fontSize: 80,
               fontWeight: 700,
-              letterSpacing: "-3.7px",
-              lineHeight: 1.04,
+              letterSpacing: "-4.8px",
+              lineHeight: 0.98,
               marginTop: 18,
             }}
           >
@@ -131,9 +131,9 @@ export async function createSocialImage() {
           <span
             style={{
               color: "#52525b",
-              fontSize: 25,
+              fontSize: 29,
               lineHeight: 1.45,
-              marginTop: 24,
+              marginTop: 40,
               maxWidth: 900,
             }}
           >
