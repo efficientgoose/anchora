@@ -20,6 +20,7 @@ import type { TeamDirectory, TeamInvitation, TeamMember } from "./types";
 
 const initialInviteState: InviteMemberState = { status: "idle" };
 const initialResendState: ResendMemberInvitationState = { status: "idle" };
+const INVITATION_SUCCESS_CLOSE_DELAY_MS = 900;
 
 const roleLabels: Record<StaffRole, string> = { owner: "Owner", admin: "Admin", member: "Member" };
 const accessLevels: Array<{ value: StaffRole; label: string; description: string; icon: typeof UsersRound }> = [
@@ -127,19 +128,20 @@ function ResendSubmitButton({ availableAt }: { availableAt: string }) {
   );
 }
 
-function InviteMemberDrawer() {
+function InviteMemberDrawer({ onInvitationSent }: { onInvitationSent: () => void }) {
   const formRef = React.useRef<HTMLFormElement>(null);
   const [state, formAction] = React.useActionState(inviteMemberAction, initialInviteState);
 
   React.useEffect(() => {
     if (state.status === "success") {
       formRef.current?.reset();
-      return;
+      const closeTimer = window.setTimeout(onInvitationSent, INVITATION_SUCCESS_CLOSE_DELAY_MS);
+      return () => window.clearTimeout(closeTimer);
     }
     if (state.status === "error") {
       formRef.current?.querySelector<HTMLElement>("[aria-invalid='true'], [data-invalid='true']")?.focus();
     }
-  }, [state]);
+  }, [onInvitationSent, state]);
 
   return (
     <SheetContent side="right" closeLabel="Close invitation panel" className="flex h-dvh max-h-dvh flex-col overflow-hidden">
@@ -283,11 +285,18 @@ function CompactEmptyState({
 
 export function TeamPage({ directory }: { directory: TeamDirectory | null }) {
   const [resendState, resendAction] = React.useActionState(resendMemberInvitationAction, initialResendState);
+  const [inviteOpen, setInviteOpen] = React.useState(false);
+  const [inviteSession, setInviteSession] = React.useState(0);
+  const handleInvitationDrawerChange = React.useCallback((open: boolean) => {
+    setInviteOpen(open);
+    if (open) setInviteSession((session) => session + 1);
+  }, []);
+  const closeInvitationDrawer = React.useCallback(() => setInviteOpen(false), []);
   const activeCount = directory?.members.length ?? 0;
   const pendingCount = directory?.invitations.length ?? 0;
 
   return (
-    <Sheet>
+    <Sheet open={inviteOpen} onOpenChange={handleInvitationDrawerChange}>
       <div className="page-container page-enter overflow-x-hidden">
         <PageHeader
           className="mb-5 border-b border-border-default pb-5"
@@ -352,7 +361,7 @@ export function TeamPage({ directory }: { directory: TeamDirectory | null }) {
         )}
       </div>
 
-      <InviteMemberDrawer />
+      <InviteMemberDrawer key={inviteSession} onInvitationSent={closeInvitationDrawer} />
     </Sheet>
   );
 }
