@@ -62,9 +62,9 @@ function RoleSelect({ id, name, defaultValue, ...ariaProps }: RoleSelectProps) {
         className="group relative flex h-11 w-full items-center justify-between overflow-hidden rounded-control border border-border-strong bg-surface px-3.5 text-left text-text-primary shadow-subtle outline-none transition [transition-duration:var(--motion-fast)] hover:border-brand-ink focus-visible:border-brand-gold-strong data-[state=open]:border-brand-ink aria-invalid:border-status-danger"
         {...ariaProps}
       >
-        <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-brand-gold" />
+        <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-brand-gold opacity-0 transition-opacity group-data-[state=open]:opacity-100" />
         <span className="flex min-w-0 items-center gap-2.5">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-brand-ink text-brand-gold"><ShieldCheck aria-hidden="true" className="size-3.5" /></span>
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-sm border border-border-default bg-surface text-text-secondary"><ShieldCheck aria-hidden="true" className="size-4" /></span>
           <SelectPrimitive.Value placeholder="Select access" className="block truncate text-sm font-semibold" />
         </span>
         <SelectPrimitive.Icon><ChevronDown aria-hidden="true" className="size-4 text-text-muted transition-transform group-data-[state=open]:rotate-180" /></SelectPrimitive.Icon>
@@ -93,7 +93,7 @@ function RoleSelect({ id, name, defaultValue, ...ariaProps }: RoleSelectProps) {
                     <SelectPrimitive.ItemText><span className="block text-sm font-semibold">{level.label}</span></SelectPrimitive.ItemText>
                     <span className="mt-0.5 block text-xs leading-4 text-text-muted">{level.description}</span>
                   </span>
-                  <SelectPrimitive.ItemIndicator className="absolute right-3 flex size-5 items-center justify-center rounded-full bg-brand-ink text-brand-gold"><Check aria-hidden="true" className="size-3" /></SelectPrimitive.ItemIndicator>
+                  <SelectPrimitive.ItemIndicator className="absolute right-3 flex size-5 items-center justify-center rounded-full bg-status-success text-text-inverse"><Check aria-hidden="true" className="size-3" /></SelectPrimitive.ItemIndicator>
                 </SelectPrimitive.Item>
               );
             })}
