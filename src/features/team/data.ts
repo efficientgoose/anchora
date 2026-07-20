@@ -27,18 +27,26 @@ const teamDirectorySchema = z.object({
   })),
 });
 
-export async function loadTeamDirectory(supabase: SupabaseClient): Promise<TeamDirectory | null> {
+export type TeamDirectoryLoadResult =
+  | { status: "ready"; directory: TeamDirectory }
+  | { status: "forbidden" }
+  | { status: "error" };
+
+export async function loadTeamDirectory(supabase: SupabaseClient): Promise<TeamDirectoryLoadResult> {
   const { data, error } = await supabase.rpc("get_team_directory");
   if (error) {
+    if (error.code === "42501" && error.message.includes("owner_required")) {
+      return { status: "forbidden" };
+    }
     console.error("[team:directory]", { code: error.code ?? "unknown" });
-    return null;
+    return { status: "error" };
   }
 
   const parsed = teamDirectorySchema.safeParse(data);
   if (!parsed.success) {
     console.error("[team:directory]", { code: "invalid_directory_payload" });
-    return null;
+    return { status: "error" };
   }
 
-  return parsed.data;
+  return { status: "ready", directory: parsed.data };
 }
