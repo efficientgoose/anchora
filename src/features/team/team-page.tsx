@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { useFormStatus } from "react-dom";
-import { CalendarDays, Check, ChevronDown, Crown, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
+import { CalendarDays, CheckCheck, ChevronDown, Crown, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
 import { PageHeader } from "@/components/patterns/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -93,7 +93,7 @@ function RoleSelect({ id, name, defaultValue, ...ariaProps }: RoleSelectProps) {
                     <SelectPrimitive.ItemText><span className="block text-sm font-semibold">{level.label}</span></SelectPrimitive.ItemText>
                     <span className="mt-0.5 block text-xs leading-4 text-text-muted">{level.description}</span>
                   </span>
-                  <SelectPrimitive.ItemIndicator className="absolute right-3 flex size-5 items-center justify-center rounded-full bg-status-success text-text-inverse"><Check aria-hidden="true" className="size-3" /></SelectPrimitive.ItemIndicator>
+                  <SelectPrimitive.ItemIndicator className="absolute right-3 flex size-6 items-center justify-center rounded-full bg-success-soft text-status-success ring-1 ring-inset ring-success-border"><CheckCheck aria-hidden="true" className="size-3.5" strokeWidth={2.25} /></SelectPrimitive.ItemIndicator>
                 </SelectPrimitive.Item>
               );
             })}
