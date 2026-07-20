@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useFormStatus } from "react-dom";
-import { CalendarDays, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
+import { CalendarDays, ChevronDown, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
 import { PageHeader } from "@/components/patterns/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -22,10 +22,10 @@ const initialInviteState: InviteMemberState = { status: "idle" };
 const initialResendState: ResendMemberInvitationState = { status: "idle" };
 
 const roleLabels: Record<StaffRole, string> = { owner: "Owner", admin: "Admin", member: "Member" };
-const accessLevels: Array<{ value: StaffRole; label: string; description: string }> = [
-  { value: "member", label: "Member", description: "Standard access for day-to-day student work." },
-  { value: "admin", label: "Admin", description: "Workspace access without owner controls." },
-  { value: "owner", label: "Owner", description: "Full access, including member invitations." },
+const accessLevels: Array<{ value: StaffRole; label: string }> = [
+  { value: "member", label: "Member" },
+  { value: "admin", label: "Admin" },
+  { value: "owner", label: "Owner" },
 ];
 
 function displayDate(value: string) {
@@ -40,9 +40,26 @@ function displayDate(value: string) {
 function InviteSubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button className="w-full" size="lg" disabled={pending}>
+    <Button className="w-full" disabled={pending}>
       {pending ? "Sending invitation…" : <><MailPlus aria-hidden="true" /> Send invitation</>}
     </Button>
+  );
+}
+
+function RoleSelect({ className, children, ...props }: React.ComponentProps<"select">) {
+  return (
+    <div className="relative">
+      <select
+        className={cn(
+          "h-10 w-full appearance-none rounded-control border border-border-default bg-surface px-3 pr-10 text-sm leading-[22px] text-text-primary outline-none transition [transition-duration:var(--motion-fast)] hover:border-border-strong focus:border-brand-ink focus:ring-[3px] focus:ring-brand-gold/25 aria-invalid:border-status-danger aria-invalid:focus:border-status-danger",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
+    </div>
   );
 }
 
@@ -84,24 +101,24 @@ function InviteMemberDrawer() {
   }, [state]);
 
   return (
-    <SheetContent side="right" closeLabel="Close invitation panel" className="flex flex-col overflow-y-auto">
+    <SheetContent side="right" closeLabel="Close invitation panel" className="flex h-dvh max-h-dvh flex-col overflow-hidden">
       <div className="h-1 shrink-0 bg-brand-gold" />
-      <header className="border-b border-border-subtle px-5 pb-5 pt-6 pr-16 sm:px-7 sm:pb-6 sm:pt-7 sm:pr-16">
+      <header className="shrink-0 border-b border-border-subtle px-5 pb-4 pt-5 pr-16 sm:px-7 sm:pr-16">
         <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.08em] text-brand-gold-strong">
           <ShieldCheck aria-hidden="true" className="size-3.5" /> Owner control
         </div>
-        <SheetTitle className="mt-2 text-2xl font-bold tracking-[-.025em] text-text-primary">Invite a team member</SheetTitle>
-        <SheetDescription className="mt-2 text-sm leading-[22px] text-text-muted">Give a teammate secure access to this workspace.</SheetDescription>
+        <SheetTitle className="mt-1.5 text-2xl font-bold tracking-[-.025em] text-text-primary">Invite a team member</SheetTitle>
+        <SheetDescription className="mt-1.5 text-sm leading-[22px] text-text-muted">Give a teammate secure access to this workspace.</SheetDescription>
       </header>
 
-      <div className="flex-1 px-5 py-6 sm:px-7">
+      <div className="min-h-0 flex-1 px-5 py-5 sm:px-7">
         {state.message && (
-          <Notice tone={state.status === "success" ? "success" : "danger"} className="mb-6" role={state.status === "error" ? "alert" : "status"}>
+          <Notice tone={state.status === "success" ? "success" : "danger"} className="mb-4" role={state.status === "error" ? "alert" : "status"}>
             {state.message}
           </Notice>
         )}
 
-        <form ref={formRef} action={formAction} className="space-y-5">
+        <form ref={formRef} action={formAction} className="space-y-4">
           <FormField label="Full name" required error={state.fieldErrors?.fullName}>
             <Input name="fullName" autoComplete="name" placeholder="e.g. Maya Patel" defaultValue={state.status === "error" ? state.fullName : undefined} required />
           </FormField>
@@ -109,18 +126,11 @@ function InviteMemberDrawer() {
             <Input name="email" type="email" autoComplete="email" placeholder="maya@consultancy.com" defaultValue={state.status === "error" ? state.email : undefined} required />
           </FormField>
 
-          <fieldset aria-describedby={state.fieldErrors?.role ? "member-role-error" : "member-role-hint"}>
-            <legend className="text-[13px] font-semibold leading-5 text-text-secondary">Access level <span aria-hidden="true" className="ml-1 text-status-danger">*</span><span className="sr-only"> (required)</span></legend>
-            <div className="mt-2 space-y-2">
-              {accessLevels.map((level) => (
-                <label key={level.value} className={cn("flex min-h-14 items-start gap-3 rounded-control border bg-surface px-3.5 py-3 transition-colors hover:border-border-strong hover:bg-surface-muted/50 has-[:checked]:border-brand-ink has-[:checked]:bg-accent-soft/45", state.fieldErrors?.role ? "border-danger-border" : "border-border-default")}>
-                  <input type="radio" name="role" value={level.value} defaultChecked={level.value === "member"} data-invalid={state.fieldErrors?.role ? "true" : undefined} className="mt-0.5 size-4 shrink-0 accent-brand-ink" />
-                  <span className="min-w-0"><span className="block text-sm font-semibold text-text-primary">{level.label}</span><span className="mt-0.5 block text-xs leading-4 text-text-muted">{level.description}</span></span>
-                </label>
-              ))}
-            </div>
-            {state.fieldErrors?.role ? <p id="member-role-error" role="alert" className="mt-1.5 text-xs font-medium leading-4 text-status-danger">{state.fieldErrors.role}</p> : <p id="member-role-hint" className="mt-1.5 text-xs leading-4 text-text-muted">The selected access level is assigned when the invitation is accepted.</p>}
-          </fieldset>
+          <FormField label="Access level" required error={state.fieldErrors?.role}>
+            <RoleSelect name="role" defaultValue="member" required>
+              {accessLevels.map((level) => <option key={level.value} value={level.value}>{level.label}</option>)}
+            </RoleSelect>
+          </FormField>
 
           <InviteSubmitButton />
         </form>
@@ -128,7 +138,6 @@ function InviteMemberDrawer() {
 
       <div className="shrink-0 border-t border-border-default bg-surface-muted/70 px-5 py-4 text-xs leading-5 text-text-muted sm:px-7">
         <div className="flex gap-2"><CalendarDays aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-brand-gold-strong" /><span>Secure links remain valid for 24 hours.</span></div>
-        <div className="mt-2 flex gap-2"><ShieldCheck aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-brand-gold-strong" /><span>Up to 5 invitation emails per workspace in 24 hours.</span></div>
       </div>
     </SheetContent>
   );
