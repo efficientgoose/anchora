@@ -83,7 +83,7 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col bg-surface">
-      <div className={cn("flex h-16 shrink-0 items-center border-b border-border-subtle", collapsed ? "justify-center px-2" : "justify-between px-4")}>
+      <div className={cn("flex h-16 shrink-0 items-center border-b border-border-subtle", collapsed ? "justify-center px-2" : "justify-between gap-3 px-4")}>
         {collapsed && onToggle ? (
           <button type="button" onClick={onToggle} aria-label="Expand sidebar" title="Expand sidebar" className="group relative flex size-10 items-center justify-center rounded-control text-text-muted outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/30">
             <BrandIcon compact className="transition [transition-duration:var(--motion-fast)] group-hover:scale-75 group-hover:opacity-0 group-focus-visible:scale-75 group-focus-visible:opacity-0" />
@@ -92,9 +92,8 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
             </span>
           </button>
         ) : (
-          <div className="min-w-0">
-            <BrandMark href="/students" />
-            <p className="ml-10 mt-0.5 truncate text-[11px] leading-4 text-text-muted" title={actor.organizationName}>{actor.organizationName}</p>
+          <div className="min-w-0 flex-1">
+            <BrandMark href="/students" subtitle={actor.organizationName} />
           </div>
         )}
         {!collapsed && onToggle && (
