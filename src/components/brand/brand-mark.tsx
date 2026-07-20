@@ -36,7 +36,7 @@ export function BrandMark({ compact = false, showName = true, subtitle, classNam
     >
       <BrandIcon compact={compact} className={showSubtitle ? "row-span-2" : undefined} />
       {showName && <span className={cn("font-semibold tracking-[-.025em]", compact ? "text-[13px]" : "text-[18px]", showSubtitle && "self-end leading-5")}>Anchora</span>}
-      {showSubtitle && <span className="min-w-0 self-start truncate text-[11px] leading-4 text-text-muted" title={subtitle}>{subtitle}</span>}
+      {showSubtitle && <span className="min-w-0 self-start truncate text-[13px] font-medium leading-4 text-text-secondary" title={subtitle}>{subtitle}</span>}
     </Link>
   );
 }
