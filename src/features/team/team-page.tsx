@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
 import { useFormStatus } from "react-dom";
-import { CalendarDays, ChevronDown, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, Crown, MailPlus, RefreshCw, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
 import { PageHeader } from "@/components/patterns/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +15,6 @@ import { Notice } from "@/components/ui/notice";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { StaffRole } from "@/domain/models";
 import { initials } from "@/domain/student-calculations";
-import { cn } from "@/lib/cn";
 import { inviteMemberAction, resendMemberInvitationAction, type InviteMemberState, type ResendMemberInvitationState } from "./actions";
 import type { TeamDirectory, TeamInvitation, TeamMember } from "./types";
 
@@ -22,10 +22,10 @@ const initialInviteState: InviteMemberState = { status: "idle" };
 const initialResendState: ResendMemberInvitationState = { status: "idle" };
 
 const roleLabels: Record<StaffRole, string> = { owner: "Owner", admin: "Admin", member: "Member" };
-const accessLevels: Array<{ value: StaffRole; label: string }> = [
-  { value: "member", label: "Member" },
-  { value: "admin", label: "Admin" },
-  { value: "owner", label: "Owner" },
+const accessLevels: Array<{ value: StaffRole; label: string; description: string; icon: typeof UsersRound }> = [
+  { value: "member", label: "Member", description: "Standard access for day-to-day student work.", icon: UsersRound },
+  { value: "admin", label: "Admin", description: "Workspace access without owner controls.", icon: ShieldCheck },
+  { value: "owner", label: "Owner", description: "Full access, including member invitations.", icon: Crown },
 ];
 
 function displayDate(value: string) {
@@ -46,20 +46,61 @@ function InviteSubmitButton() {
   );
 }
 
-function RoleSelect({ className, children, ...props }: React.ComponentProps<"select">) {
+interface RoleSelectProps {
+  id?: string;
+  name: string;
+  defaultValue: StaffRole;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+}
+
+function RoleSelect({ id, name, defaultValue, ...ariaProps }: RoleSelectProps) {
   return (
-    <div className="relative">
-      <select
-        className={cn(
-          "h-10 w-full appearance-none rounded-control border border-border-default bg-surface px-3 pr-10 text-sm leading-[22px] text-text-primary outline-none transition [transition-duration:var(--motion-fast)] hover:border-border-strong focus:border-brand-ink focus:ring-[3px] focus:ring-brand-gold/25 aria-invalid:border-status-danger aria-invalid:focus:border-status-danger",
-          className,
-        )}
-        {...props}
+    <SelectPrimitive.Root name={name} defaultValue={defaultValue} required>
+      <SelectPrimitive.Trigger
+        id={id}
+        className="group relative flex h-11 w-full items-center justify-between overflow-hidden rounded-control border border-border-strong bg-surface px-3.5 text-left text-text-primary shadow-subtle outline-none transition [transition-duration:var(--motion-fast)] hover:border-brand-ink focus-visible:border-brand-gold-strong data-[state=open]:border-brand-ink aria-invalid:border-status-danger"
+        {...ariaProps}
       >
-        {children}
-      </select>
-      <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-    </div>
+        <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-brand-gold" />
+        <span className="flex min-w-0 items-center gap-2.5">
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-brand-ink text-brand-gold"><ShieldCheck aria-hidden="true" className="size-3.5" /></span>
+          <SelectPrimitive.Value placeholder="Select access" className="block truncate text-sm font-semibold" />
+        </span>
+        <SelectPrimitive.Icon><ChevronDown aria-hidden="true" className="size-4 text-text-muted transition-transform group-data-[state=open]:rotate-180" /></SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
+
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
+          position="popper"
+          align="start"
+          sideOffset={6}
+          collisionPadding={12}
+          className="z-[100] w-[var(--radix-select-trigger-width)] overflow-hidden rounded-card border border-border-strong bg-surface shadow-popover"
+        >
+          <div aria-hidden="true" className="h-0.5 bg-brand-gold" />
+          <SelectPrimitive.Viewport className="p-1.5">
+            {accessLevels.map((level) => {
+              const Icon = level.icon;
+              return (
+                <SelectPrimitive.Item
+                  key={level.value}
+                  value={level.value}
+                  className="group relative flex min-h-[58px] cursor-pointer select-none items-center gap-3 rounded-control px-3 py-2 pr-10 text-text-secondary outline-none transition-colors data-[highlighted]:bg-surface-muted data-[highlighted]:text-text-primary data-[state=checked]:bg-accent-soft/70 data-[state=checked]:text-text-primary"
+                >
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-sm border border-border-default bg-surface text-text-secondary group-data-[state=checked]:border-brand-gold"><Icon aria-hidden="true" className="size-4" /></span>
+                  <span className="min-w-0 flex-1">
+                    <SelectPrimitive.ItemText><span className="block text-sm font-semibold">{level.label}</span></SelectPrimitive.ItemText>
+                    <span className="mt-0.5 block text-xs leading-4 text-text-muted">{level.description}</span>
+                  </span>
+                  <SelectPrimitive.ItemIndicator className="absolute right-3 flex size-5 items-center justify-center rounded-full bg-brand-ink text-brand-gold"><Check aria-hidden="true" className="size-3" /></SelectPrimitive.ItemIndicator>
+                </SelectPrimitive.Item>
+              );
+            })}
+          </SelectPrimitive.Viewport>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
   );
 }
 
@@ -127,9 +168,7 @@ function InviteMemberDrawer() {
           </FormField>
 
           <FormField label="Access level" required error={state.fieldErrors?.role}>
-            <RoleSelect name="role" defaultValue="member" required>
-              {accessLevels.map((level) => <option key={level.value} value={level.value}>{level.label}</option>)}
-            </RoleSelect>
+            <RoleSelect name="role" defaultValue="member" />
           </FormField>
 
           <InviteSubmitButton />
@@ -137,7 +176,7 @@ function InviteMemberDrawer() {
       </div>
 
       <div className="shrink-0 border-t border-border-default bg-surface-muted/70 px-5 py-4 text-xs leading-5 text-text-muted sm:px-7">
-        <div className="flex gap-2"><CalendarDays aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-brand-gold-strong" /><span>Secure links remain valid for 24 hours.</span></div>
+        <div className="flex gap-2"><CalendarDays aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-brand-gold-strong" /><span>Invite links remain valid for 24 hours.</span></div>
       </div>
     </SheetContent>
   );
