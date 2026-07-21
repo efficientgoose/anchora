@@ -79,7 +79,7 @@ function SidebarToggleIcon({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-function SidebarContent({ actor, collapsed = false, onToggle }: { actor: WorkspaceActor; collapsed?: boolean; onToggle?: () => void }) {
+function SidebarContent({ actor, collapsed = false, onToggle, onNavigate }: { actor: WorkspaceActor; collapsed?: boolean; onToggle?: () => void; onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
     <div className={cn("flex h-full flex-col bg-surface", collapsed && "group/sidebar")}>
@@ -111,7 +111,7 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
           const Icon = item.icon;
           if (!item.enabled) return <span key={item.label} aria-disabled="true" title={`${item.label} — coming soon`} className={cn("my-0.5 flex min-h-10 cursor-default items-center rounded-control text-sm font-medium text-text-muted opacity-45", collapsed ? "justify-center px-0" : "gap-2.5 px-3")}><Icon aria-hidden="true" className="size-5" />{!collapsed && <>{item.label}<span className="sr-only"> — coming soon</span></>}</span>;
           return (
-            <Link key={item.label} href={item.href} aria-label={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined} title={collapsed ? item.label : undefined} className={cn("relative my-0.5 flex min-h-10 items-center rounded-control text-sm font-medium transition-colors [transition-duration:var(--motion-fast)]", collapsed ? "justify-center px-0" : "gap-2.5 px-3", active ? "bg-accent-soft text-brand-ink" : "link-hover-gold text-text-secondary hover:bg-surface-muted")}>
+            <Link key={item.label} href={item.href} onClick={onNavigate} aria-label={collapsed ? item.label : undefined} aria-current={active ? "page" : undefined} title={collapsed ? item.label : undefined} className={cn("relative my-0.5 flex min-h-10 items-center rounded-control text-sm font-medium transition-colors [transition-duration:var(--motion-fast)]", collapsed ? "justify-center px-0" : "gap-2.5 px-3", active ? "bg-accent-soft text-brand-ink" : "link-hover-gold text-text-secondary hover:bg-surface-muted")}>
               {active && <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-brand-gold" />}
               <Icon aria-hidden="true" className="size-5" />{!collapsed && item.label}
             </Link>
@@ -145,8 +145,10 @@ function SidebarContent({ actor, collapsed = false, onToggle }: { actor: Workspa
 
 export function AppShell({ actor, children, demoData = false }: { actor: WorkspaceActor; children: React.ReactNode; demoData?: boolean }) {
   const pathname = usePathname();
+  const [mobileNavigationOpen, setMobileNavigationOpen] = React.useState(false);
   const collapsed = React.useSyncExternalStore(subscribeToSidebarPreference, readSidebarPreference, () => false);
   const toggleSidebar = React.useCallback(() => writeSidebarPreference(!collapsed), [collapsed]);
+  const closeMobileNavigation = React.useCallback(() => setMobileNavigationOpen(false), []);
   const showDemoDataNotice = demoData && (pathname.startsWith("/students") || pathname.startsWith("/intakes"));
 
   return (
@@ -155,7 +157,7 @@ export function AppShell({ actor, children, demoData = false }: { actor: Workspa
       <aside className={cn("hidden shrink-0 overflow-hidden border-r border-border-default transition-[width] [transition-duration:var(--motion-fast)] lg:block", collapsed ? "w-[72px]" : "w-64")}><SidebarContent actor={actor} collapsed={collapsed} onToggle={toggleSidebar} /></aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center border-b border-border-default bg-surface px-4 lg:hidden">
-          <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent closeLabel="Close navigation"><SheetTitle className="sr-only">Workspace navigation</SheetTitle><SidebarContent actor={actor} /></SheetContent></Sheet>
+          <Sheet open={mobileNavigationOpen} onOpenChange={setMobileNavigationOpen}><SheetTrigger asChild><Button variant="ghost" size="icon-md" className="mr-3" aria-label="Open navigation"><Menu /></Button></SheetTrigger><SheetContent closeLabel="Close navigation"><SheetTitle className="sr-only">Workspace navigation</SheetTitle><SidebarContent actor={actor} onNavigate={closeMobileNavigation} /></SheetContent></Sheet>
           <BrandMark href="/students" compact />
         </header>
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
