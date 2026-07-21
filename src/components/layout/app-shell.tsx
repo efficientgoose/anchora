@@ -82,12 +82,12 @@ function SidebarToggleIcon({ collapsed }: { collapsed: boolean }) {
 function SidebarContent({ actor, collapsed = false, onToggle }: { actor: WorkspaceActor; collapsed?: boolean; onToggle?: () => void }) {
   const pathname = usePathname();
   return (
-    <div className="flex h-full flex-col bg-surface">
+    <div className={cn("flex h-full flex-col bg-surface", collapsed && "group/sidebar")}>
       <div className={cn("flex h-16 shrink-0 items-center border-b border-border-subtle", collapsed ? "justify-center px-2" : "justify-between gap-3 px-4")}>
         {collapsed && onToggle ? (
           <button type="button" onClick={onToggle} aria-label="Expand sidebar" title="Expand sidebar" className="group relative flex size-10 items-center justify-center rounded-control text-text-muted outline-none focus-visible:ring-[3px] focus-visible:ring-brand-gold/30">
-            <BrandIcon compact className="transition [transition-duration:var(--motion-fast)] group-hover:scale-75 group-hover:opacity-0 group-focus-visible:scale-75 group-focus-visible:opacity-0" />
-            <span className="absolute inset-0 flex scale-75 items-center justify-center opacity-0 transition [transition-duration:var(--motion-fast)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
+            <BrandIcon compact className="transition [transition-duration:var(--motion-fast)] group-hover/sidebar:scale-75 group-hover/sidebar:opacity-0 group-hover:scale-75 group-hover:opacity-0 group-focus-visible:scale-75 group-focus-visible:opacity-0" />
+            <span className="absolute inset-0 flex scale-75 items-center justify-center opacity-0 transition [transition-duration:var(--motion-fast)] group-hover/sidebar:scale-100 group-hover/sidebar:opacity-100 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
               <SidebarToggleIcon collapsed />
             </span>
           </button>
