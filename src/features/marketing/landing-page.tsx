@@ -118,20 +118,46 @@ export function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-border-subtle">
-        <div className="mx-auto max-w-[1140px] px-5 py-7 text-[13px] leading-5 text-text-muted sm:px-7">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <BrandMark compact />
-            <span>© 2026 Anchora</span>
-            <div className="flex-1" />
-            <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <a href="#product" className="link-hover-gold hidden rounded-sm sm:block">Product</a>
-              <Link href="/privacy" className="link-hover-gold rounded-sm">Privacy</Link>
-              <Link href="/terms" className="link-hover-gold rounded-sm">Terms</Link>
-              <Link href="/login" className="link-hover-gold rounded-sm">Log in</Link>
+      <footer className="relative overflow-hidden border-t border-border-subtle bg-surface">
+        <div aria-hidden="true" className="absolute inset-0 opacity-40 [background-image:linear-gradient(var(--border-subtle)_1px,transparent_1px),linear-gradient(90deg,var(--border-subtle)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_92%)]" />
+        <div className="relative mx-auto max-w-[1140px] px-5 py-16 sm:px-7 sm:py-20">
+          <div className="grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
+            <div className="max-w-[390px]">
+              <BrandMark />
+              <p className="mt-5 text-[15px] font-medium leading-6 text-text-secondary">Manage every application. Never miss a deadline.</p>
+              <p className="mt-2 max-w-[350px] text-[13px] leading-5 text-text-muted">Everything your consultancy needs to manage student applications, in one focused workspace.</p>
+            </div>
+
+            <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
+              <div>
+                <h2 className="type-label text-text-primary">Product</h2>
+                <ul aria-label="Product links" className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                  <li><a href="#product" className="link-hover-gold rounded-sm">Overview</a></li>
+                  <li><a href="#how" className="link-hover-gold rounded-sm">How it works</a></li>
+                  <li><Link href="/design-system" className="link-hover-gold rounded-sm">Design system</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h2 className="type-label text-text-primary">Account</h2>
+                <ul className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                  <li><Link href="/login" className="link-hover-gold rounded-sm">Log in</Link></li>
+                  <li><Link href="/signup" className="link-hover-gold rounded-sm">Get started</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h2 className="type-label text-text-primary">Legal</h2>
+                <ul className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                  <li><Link href="/privacy" className="link-hover-gold rounded-sm">Privacy</Link></li>
+                  <li><Link href="/terms" className="link-hover-gold rounded-sm">Terms</Link></li>
+                </ul>
+              </div>
             </nav>
           </div>
-          <p className="mt-5 text-center text-xs">Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="link-hover-gold rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4">Ajinkya Kale</a></p>
+
+          <div className="mt-16 flex flex-col gap-3 text-xs leading-5 text-text-muted sm:flex-row sm:items-center sm:justify-between">
+            <span>© 2026 Anchora</span>
+            <p>Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="link-hover-gold rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4">Ajinkya Kale</a></p>
+          </div>
         </div>
       </footer>
     </div>
