@@ -326,5 +326,5 @@ export async function signOutAction() {
   if (supabase) await supabase.auth.signOut({ scope: "local" });
   const cookieStore = await cookies();
   cookieStore.delete(AUTH_FLOW_COOKIE);
-  redirect("/login");
+  redirect("/");
 }
