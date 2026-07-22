@@ -25,6 +25,7 @@ function finalizeResponse(request: NextRequest, destination: URL | null, pending
 export async function refreshAuthSession(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const protectedPath = isProtectedPath(pathname);
+  const homePath = pathname === "/";
   const loginPath = pathname === "/login";
   const config = getSupabasePublicConfig();
 
@@ -56,6 +57,10 @@ export async function refreshAuthSession(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", requestedPath(pathname, search));
     return finalizeResponse(request, loginUrl, pendingCookies, pendingHeaders);
+  }
+
+  if (homePath && authenticated) {
+    return finalizeResponse(request, new URL("/students", request.url), pendingCookies, pendingHeaders);
   }
 
   if (loginPath && authenticated) {
