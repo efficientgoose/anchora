@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, Gauge, ListChecks, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, Gauge, Heart, ListChecks, ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -130,23 +130,24 @@ export function LandingPage() {
 
             <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3">
               <div>
-                <h2 className="type-label text-text-primary">Product</h2>
-                <ul aria-label="Product links" className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                <h2 className="text-sm font-semibold leading-5 text-text-primary">Product</h2>
+                <ul aria-label="Product links" className="mt-4 space-y-3 text-[13.5px] leading-6 text-text-muted">
                   <li><a href="#product" className="link-hover-gold rounded-sm">Overview</a></li>
                   <li><a href="#how" className="link-hover-gold rounded-sm">How it works</a></li>
                   <li><Link href="/design-system" className="link-hover-gold rounded-sm">Design system</Link></li>
                 </ul>
               </div>
               <div>
-                <h2 className="type-label text-text-primary">Account</h2>
-                <ul className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                <h2 className="text-sm font-semibold leading-5 text-text-primary">Get started</h2>
+                <ul className="mt-4 space-y-3 text-[13.5px] leading-6 text-text-muted">
                   <li><Link href="/login" className="link-hover-gold rounded-sm">Log in</Link></li>
-                  <li><Link href="/signup" className="link-hover-gold rounded-sm">Get started</Link></li>
+                  <li><Link href="/signup" className="link-hover-gold rounded-sm">Create an account</Link></li>
+                  <li><a href="mailto:hello@tryanchora.com" className="link-hover-gold rounded-sm">Contact us</a></li>
                 </ul>
               </div>
               <div>
-                <h2 className="type-label text-text-primary">Legal</h2>
-                <ul className="mt-4 space-y-3 text-[13px] leading-5 text-text-muted">
+                <h2 className="text-sm font-semibold leading-5 text-text-primary">Legal</h2>
+                <ul className="mt-4 space-y-3 text-[13.5px] leading-6 text-text-muted">
                   <li><Link href="/privacy" className="link-hover-gold rounded-sm">Privacy</Link></li>
                   <li><Link href="/terms" className="link-hover-gold rounded-sm">Terms</Link></li>
                 </ul>
@@ -156,7 +157,7 @@ export function LandingPage() {
 
           <div className="mt-16 flex flex-col gap-3 text-xs leading-5 text-text-muted sm:flex-row sm:items-center sm:justify-between">
             <span>© 2026 Anchora</span>
-            <p>Made with <span role="img" aria-label="love">❤️</span> by{" "}<a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="link-hover-gold rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4">Ajinkya Kale</a></p>
+            <p className="flex items-center gap-1.5">Made with <Heart role="img" aria-label="love" fill="currentColor" stroke="currentColor" className="size-3.5 text-brand-gold" /> by <a href="https://ajkale.com" target="_blank" rel="noopener noreferrer" className="link-hover-gold rounded-sm font-medium text-text-secondary underline decoration-border-strong underline-offset-4">Ajinkya Kale</a></p>
           </div>
         </div>
       </footer>
