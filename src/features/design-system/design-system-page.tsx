@@ -60,6 +60,10 @@ const nav = [
   ["accessibility", "Accessibility"],
 ] as const;
 
+type DesignSectionId = (typeof nav)[number][0];
+
+const activeSectionOffset = 96;
+
 function SectionHeading({ icon: Icon, eyebrow, title, description }: { icon: typeof Palette; eyebrow: string; title: string; description: string }) {
   return (
     <div className="mb-7 flex gap-4">
@@ -89,6 +93,47 @@ function DemoRiskTile({ risk, count, copy }: { risk: "overdue" | "at_risk" | "on
 export function DesignSystemPage() {
   const [intake, setIntake] = React.useState("winter-2027");
   const [checked, setChecked] = React.useState(true);
+  const [activeSection, setActiveSection] = React.useState<DesignSectionId>("principles");
+
+  React.useEffect(() => {
+    const sections = nav
+      .map(([id]) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    let animationFrame: number | null = null;
+
+    const syncActiveSection = () => {
+      animationFrame = null;
+      let currentSection = sections[0];
+
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top > activeSectionOffset) break;
+        currentSection = section;
+      }
+
+      const pageBottom = window.scrollY + window.innerHeight;
+      const documentBottom = document.documentElement.scrollHeight;
+      if (documentBottom - pageBottom <= 2) currentSection = sections.at(-1) ?? currentSection;
+
+      if (!currentSection) return;
+      const sectionId = currentSection.id as DesignSectionId;
+      setActiveSection((previousSection) => previousSection === sectionId ? previousSection : sectionId);
+    };
+
+    const scheduleActiveSectionSync = () => {
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(syncActiveSection);
+    };
+
+    scheduleActiveSectionSync();
+    window.addEventListener("scroll", scheduleActiveSectionSync, { passive: true });
+    window.addEventListener("resize", scheduleActiveSectionSync);
+
+    return () => {
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", scheduleActiveSectionSync);
+      window.removeEventListener("resize", scheduleActiveSectionSync);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-canvas text-text-primary">
@@ -97,9 +142,27 @@ export function DesignSystemPage() {
         <div className="mx-auto flex h-16 max-w-[1440px] items-center px-5 sm:px-8"><BrandMark /><Badge tone="accent" className="ml-3">Design System 1.0</Badge><div className="flex-1" /><Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><a href="#components">Browse components <ArrowRight /></a></Button></div>
       </header>
 
-      <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] overflow-x-hidden lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside className="print-hidden hidden border-r border-border-default px-5 py-8 lg:block">
-          <nav aria-label="Design system sections" className="sticky top-24 space-y-1">{nav.map(([href, label], index) => <a key={href} href={`#${href}`} className="link-hover-gold flex min-h-9 items-center gap-3 rounded-control px-3 text-[13px] font-medium text-text-secondary hover:bg-surface-muted"><span className="tabular-nums w-4 text-[10px] text-text-muted">{String(index + 1).padStart(2, "0")}</span>{label}</a>)}</nav>
+      <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] lg:grid-cols-[240px_minmax(0,1fr)]">
+        <aside className="print-hidden hidden border-r border-border-default px-5 py-8 lg:sticky lg:top-16 lg:block lg:h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto">
+          <nav aria-label="Design system sections">
+            <div className="type-micro mb-3 px-3 text-text-muted">On this page</div>
+            <div className="space-y-1">
+              {nav.map(([href, label], index) => {
+                const active = activeSection === href;
+                return (
+                  <a
+                    key={href}
+                    href={`#${href}`}
+                    aria-current={active ? "location" : undefined}
+                    className={`link-hover-gold flex min-h-10 items-center gap-3 rounded-control border-l-2 px-3 text-[13px] font-medium outline-none transition-colors [transition-duration:var(--motion-fast)] focus-visible:ring-[3px] focus-visible:ring-brand-gold/30 ${active ? "border-brand-gold bg-accent-soft text-brand-ink" : "border-transparent text-text-secondary hover:bg-surface-muted"}`}
+                  >
+                    <span className={`tabular-nums w-4 text-[10px] ${active ? "text-brand-gold-strong" : "text-text-muted"}`}>{String(index + 1).padStart(2, "0")}</span>
+                    {label}
+                  </a>
+                );
+              })}
+            </div>
+          </nav>
         </aside>
 
         <main id="design-system-content" tabIndex={-1} className="min-w-0 max-w-full overflow-x-hidden outline-none">
