@@ -10,13 +10,14 @@ interface PendingCookie {
 }
 
 const protectedPrefixes = ["/students", "/intakes", "/team", "/onboarding"];
+const REQUEST_PATH_HEADER = "x-anchora-request-path";
 
 function isProtectedPath(pathname: string) {
   return protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
-function finalizeResponse(request: NextRequest, destination: URL | null, pendingCookies: PendingCookie[], pendingHeaders: Record<string, string>) {
-  const response = destination ? NextResponse.redirect(destination) : NextResponse.next({ request });
+function finalizeResponse(destination: URL | null, pendingCookies: PendingCookie[], pendingHeaders: Record<string, string>, requestHeaders: Headers) {
+  const response = destination ? NextResponse.redirect(destination) : NextResponse.next({ request: { headers: requestHeaders } });
   pendingCookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
   Object.entries(pendingHeaders).forEach(([name, value]) => response.headers.set(name, value));
   return response;
@@ -24,13 +25,15 @@ function finalizeResponse(request: NextRequest, destination: URL | null, pending
 
 export async function refreshAuthSession(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(REQUEST_PATH_HEADER, requestedPath(pathname, search));
   const protectedPath = isProtectedPath(pathname);
   const homePath = pathname === "/";
   const loginPath = pathname === "/login";
   const config = getSupabasePublicConfig();
 
   if (!config) {
-    if (!protectedPath) return NextResponse.next({ request });
+    if (!protectedPath) return NextResponse.next({ request: { headers: requestHeaders } });
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("configuration", "missing");
     loginUrl.searchParams.set("next", requestedPath(pathname, search));
@@ -56,17 +59,17 @@ export async function refreshAuthSession(request: NextRequest) {
   if (protectedPath && !authenticated) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", requestedPath(pathname, search));
-    return finalizeResponse(request, loginUrl, pendingCookies, pendingHeaders);
+    return finalizeResponse(loginUrl, pendingCookies, pendingHeaders, requestHeaders);
   }
 
   if (homePath && authenticated) {
-    return finalizeResponse(request, new URL("/students", request.url), pendingCookies, pendingHeaders);
+    return finalizeResponse(new URL("/students", request.url), pendingCookies, pendingHeaders, requestHeaders);
   }
 
   if (loginPath && authenticated) {
     const destination = new URL(safeInternalPath(request.nextUrl.searchParams.get("next")), request.url);
-    return finalizeResponse(request, destination, pendingCookies, pendingHeaders);
+    return finalizeResponse(destination, pendingCookies, pendingHeaders, requestHeaders);
   }
 
-  return finalizeResponse(request, null, pendingCookies, pendingHeaders);
+  return finalizeResponse(null, pendingCookies, pendingHeaders, requestHeaders);
 }

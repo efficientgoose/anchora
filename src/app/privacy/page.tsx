@@ -3,21 +3,22 @@ import { LegalPage, type LegalSection } from "@/features/legal/legal-page";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Anchora handles personal information during early access.",
+  description: "How Anchora handles limited student and workspace information.",
 };
 
 const sections: LegalSection[] = [
   {
     title: "Who this policy covers",
     paragraphs: [
-      "This policy explains how Anchora handles personal information when you visit tryanchora.com, create an account, sign in, contact us, or use the early-access workspace.",
-      "For this early-access release, Anchora is the name of the product and service. Questions about this policy can be sent to hello@tryanchora.com.",
+      "This policy explains how Anchora handles personal information when you visit tryanchora.com, create an account, sign in, contact us, or use the Anchora workspace.",
+      "Anchora is operated by Ajinkya Kale, Pyramid Urban Homes, Sector 67, Gurugram, Haryana 122018, India. Questions or privacy requests can be sent to hello@tryanchora.com.",
     ],
   },
   {
     title: "Information we collect",
     items: [
       "Account information, including your name, email address, authentication method, and account identifiers.",
+      "For the student-planning service, limited adult applicant information: name, email, optional phone number, intake, assignment, journey status, and planning targets.",
       "When you choose Google sign-in, basic Google profile information such as your name, email address, profile image, and provider identity.",
       "Session and security information, including cookies, sign-in events, IP address, device or browser details, and diagnostic logs used to protect and operate the service.",
       "Messages, feedback, and support information you choose to send us.",
@@ -27,7 +28,8 @@ const sections: LegalSection[] = [
     title: "How we use information",
     items: [
       "Create and secure your Anchora account and keep you signed in.",
-      "Provide, maintain, troubleshoot, and improve the early-access product.",
+      "Provide, maintain, troubleshoot, and improve the service.",
+      "Enable the consultancy that introduced the student to plan and coordinate that student’s India-to-Germany application journey.",
       "Send essential account messages such as email confirmations and password resets.",
       "Respond to questions, prevent abuse, and understand whether the service is working as intended.",
     ],
@@ -43,9 +45,9 @@ const sections: LegalSection[] = [
     title: "Service providers",
     paragraphs: ["We use carefully selected providers to operate Anchora. They process information on our behalf under their own security and privacy commitments."],
     items: [
-      "Supabase for authentication and session infrastructure.",
+      "Supabase for authentication and database/data infrastructure.",
       "Google for optional Google sign-in.",
-      "Vercel for application hosting and operational delivery.",
+      "Vercel for application hosting, delivery, analytics, and performance monitoring.",
       "Resend for transactional account email delivery.",
       "Cloudflare for domain, DNS, and email-routing infrastructure.",
     ],
@@ -65,31 +67,32 @@ const sections: LegalSection[] = [
   {
     title: "Retention and security",
     paragraphs: [
-      "We retain account and security information for as long as needed to provide the service, protect it, resolve disputes, and meet legal obligations. Retention periods may vary by information type and provider.",
+      "Archived student records are retained for 90 days and then erased. PII-minimized audit events are retained for 12 months. Account and security information may be retained for as long as needed to provide the service, protect it, resolve disputes, and meet legal obligations.",
       "We use reasonable technical and organizational safeguards, but no internet service can guarantee absolute security. Please use a strong password and tell us promptly if you believe your account has been compromised.",
     ],
   },
   {
-    title: "Your choices and rights",
+    title: "Your choices and requests",
     paragraphs: [
-      "You may ask to access, correct, or delete information associated with your Anchora account, subject to legal and security requirements. You may also disconnect Google sign-in from your Google Account. Send requests to hello@tryanchora.com from the email associated with your account.",
+      "Consultancy owners and admins can export student records and request early erasure through the service. Students should normally contact their consultancy first, because the consultancy is responsible for its authority, notices, and instructions for student data. You may also ask to access, correct, or delete information associated with your Anchora account, subject to legal and security requirements.",
     ],
   },
   {
-    title: "Children and real student data",
+    title: "Student-data limits",
     paragraphs: [
-      "Anchora's early-access workspace is intended for adult testers and consultancy operators, not children. Do not create accounts for minors or enter personal information about students, applicants, or clients during this release.",
+      "The student-planning service is only for adult applicants in India preparing to study in Germany. Do not enter data about minors.",
+      "Do not upload or record passport or identity scans, health documents, financial documents, or unrelated sensitive or free-text information. The service is not intended to hold those materials.",
     ],
   },
   {
     title: "Changes and contact",
     paragraphs: [
-      "We may update this policy as Anchora develops. If a change is material, we will provide a reasonable notice through the service or by email and update the effective date.",
-      "Questions or privacy requests can be sent to hello@tryanchora.com.",
+      "We may update this policy. If a change is material, we will provide reasonable notice through the service or by email and update the effective date.",
+      "Questions or privacy requests can be sent to Ajinkya Kale at hello@tryanchora.com. This policy is governed by the laws of India, and the courts in Gurugram, Haryana have competent jurisdiction, subject to applicable law.",
     ],
   },
 ];
 
 export default function Page() {
-  return <LegalPage title="Privacy Policy" summary="A plain-language explanation of what Anchora collects, why we use it, and the choices available to you during early access." sections={sections} />;
+  return <LegalPage title="Privacy Policy" summary="A plain-language explanation of the limited information Anchora uses to support adult India-to-Germany student planning." sections={sections} />;
 }

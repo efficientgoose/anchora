@@ -31,7 +31,7 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
     <AuthShell
       eyebrow="Start with Anchora"
       title="Create your workspace"
-      description="Get a complete demo workspace and see how Anchora keeps every student journey moving."
+      description="Start with a blank consultancy workspace, then add each student through the protected onboarding flow."
       footer={<>Already have an account? <Link href="/login" className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">Sign in</Link></>}
     >
       {configurationMissing && <Notice tone="warning" className="mb-5" title="Signup is not configured">Add the Supabase environment settings before creating an account.</Notice>}
@@ -52,7 +52,7 @@ export function SignupPage({ configurationMissing = false, invalidLink = false }
           />
         </div>
         <Button className="mt-6 w-full" size="lg" disabled={pending || configurationMissing || !passwordsValid}>{pending ? "Creating account…" : <>Create account <ArrowRight /></>}</Button>
-        <p className="mt-4 text-center text-xs leading-5 text-text-muted">We will email you a secure confirmation link before your workspace opens.</p>
+        <p className="mt-4 text-center text-xs leading-5 text-text-muted">We will email you a secure confirmation link before your blank workspace opens.</p>
       </form>
     </AuthShell>
   );

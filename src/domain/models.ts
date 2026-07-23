@@ -1,91 +1,118 @@
 export type StaffRole = "owner" | "admin" | "member";
 export type TaskStatus = "not_started" | "in_progress" | "blocked" | "done";
 export type RiskLevel = "overdue" | "at_risk" | "on_track";
-export type StudentSortField = "risk" | "name" | "intake" | "consultant";
-export type SortDirection = "asc" | "desc";
 
-export interface Organization {
+export type IntakeSeason = "summer" | "winter";
+export type StudentLifecycleStatus = "active" | "archived";
+export type JourneyTaskStatus = "not_started" | "in_progress" | "blocked" | "completed";
+export type JourneyStageKey =
+  | "onboarded"
+  | "prepared_eligibility_aps"
+  | "prepared_tests_documents"
+  | "applied"
+  | "cleared"
+  | "enrolled";
+export type LegalDocumentKind = "terms" | "privacy";
+
+export interface StudentAssignee {
   id: string;
-  name: string;
-  slug: string;
+  fullName: string;
+  role: StaffRole;
 }
 
-export interface StaffUser {
+export interface StudentRecord {
   id: string;
   organizationId: string;
-  name: string;
+  fullName: string;
   email: string;
-  role: StaffRole;
+  phone: string | null;
+  intakeSeason: IntakeSeason;
+  intakeYear: number;
+  residenceCountryCode: "IN";
+  destinationCountryCode: "DE";
+  adultConfirmed: boolean;
+  permissionConfirmed: boolean;
+  journeyTemplateVersion: number;
+  assignedConsultantId: string;
+  lifecycleStatus: StudentLifecycleStatus;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  archivedAt: string | null;
+  archivedBy: string | null;
+}
+
+export interface JourneyStage {
+  id: string;
+  studentId: string;
+  stageKey: JourneyStageKey;
   title: string;
+  displayOrder: number;
+  createdAt: string;
 }
 
-export interface ApplicationTask {
+export interface JourneyTask {
   id: string;
-  name: string;
-  status: TaskStatus;
-  dueDate: string;
-  university: string | null;
+  stageId: string;
+  taskKey: string;
+  title: string;
+  displayOrder: number;
+  status: JourneyTaskStatus;
+  planningTargetDate: string;
+  templateTargetDate: string;
+  targetIsTemplate: boolean;
+  startedAt: string | null;
+  completedAt: string | null;
+  updatedAt: string;
 }
 
-export interface Student {
+export interface StudentJourneyStage extends JourneyStage {
+  tasks: JourneyTask[];
+}
+
+export interface StudentWorkspace {
+  student: StudentRecord;
+  stages: StudentJourneyStage[];
+  assignees: StudentAssignee[];
+}
+
+export interface StudentSummary {
   id: string;
-  organizationId: string;
-  name: string;
+  fullName: string;
   email: string;
-  phone: string;
-  targetIntake: string;
+  intakeSeason: IntakeSeason;
+  intakeYear: number;
   assignedConsultantId: string;
-  targetUniversities: string[];
-  tasks: ApplicationTask[];
+  lifecycleStatus: StudentLifecycleStatus;
+  createdAt: string;
 }
 
-export interface TenantScope {
-  organizationId: string;
-  actorId: string;
+export interface StudentDataOverview {
+  total: number;
+  active: number;
+  archived: number;
+}
+
+export interface StudentIntakeGroup {
+  intakeSeason: IntakeSeason;
+  intakeYear: number;
+  students: StudentSummary[];
+}
+
+export interface LegalDocumentAccess {
+  kind: LegalDocumentKind;
+  version: string;
+  accepted: boolean;
+  acceptedAt: string | null;
+}
+
+export interface LegalAccess {
+  documentVersion: string;
+  terms: LegalDocumentAccess;
+  privacy: LegalDocumentAccess;
+  organizationDpaAccepted: boolean;
+  organizationDpaAcceptedAt: string | null;
   role: StaffRole;
-}
-
-export interface StudentQuery {
-  page: number;
-  pageSize: number;
-  search: string;
-  risk: RiskLevel | "all";
-  consultantId: string | "all";
-  intake: string | "all";
-  sortBy: StudentSortField;
-  sortDirection: SortDirection;
-}
-
-export interface PaginatedResult<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  pageCount: number;
-}
-
-export interface RiskCounts {
-  overdue: number;
-  atRisk: number;
-  onTrack: number;
-}
-
-export interface StudentOverview {
-  total: number;
-  counts: RiskCounts;
-}
-
-export interface IntakeGroup {
-  intake: string;
-  counts: RiskCounts;
-  students: Student[];
-}
-
-export interface CreateStudentInput {
-  name: string;
-  email: string;
-  phone?: string;
-  targetIntake: string;
-  assignedConsultantId: string;
-  targetUniversities: string[];
+  ownerActionRequired: boolean;
+  studentDataAccessible: boolean;
 }
