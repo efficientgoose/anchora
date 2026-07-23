@@ -29,10 +29,10 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
         <section className="border-b border-border-subtle bg-surface">
           <div className="mx-auto max-w-[860px] px-5 py-14 sm:px-7 sm:py-16">
             <div className="mb-5 flex size-11 items-center justify-center rounded-control border border-accent-border bg-accent-soft text-brand-gold-strong"><ShieldCheck aria-hidden="true" className="size-5" /></div>
-            <div className="type-micro text-brand-gold-strong">Anchora · Early access</div>
+            <div className="type-micro text-brand-gold-strong">Anchora · Student data terms</div>
             <h1 className="mt-3 text-[38px] font-bold leading-[1.1] tracking-[-.035em] text-brand-ink sm:text-[44px]">{title}</h1>
             <p className="mt-4 max-w-[680px] text-base leading-7 text-text-secondary">{summary}</p>
-            <p className="mt-5 text-xs font-medium uppercase tracking-[.08em] text-text-muted">Effective July 18, 2026</p>
+            <p className="mt-5 text-xs font-medium uppercase tracking-[.08em] text-text-muted">Version 2026-07-student-data-v1 · Effective July 23, 2026</p>
           </div>
         </section>
 
@@ -47,8 +47,8 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
           </aside>
 
           <article className="min-w-0 max-w-[680px]">
-            <div className="mb-10 rounded-card border border-warning-border bg-warning-soft p-4 text-sm leading-6 text-status-warning">
-              Anchora is in early access. The current workspace contains synthetic, browser-local student records. Do not enter real student or client information yet.
+            <div className="mb-10 rounded-card border border-accent-border bg-accent-soft/60 p-4 text-sm leading-6 text-brand-gold-strong">
+              Anchora is designed for adult India-to-Germany applicants. Consultancies may enter only the limited student details needed for intake planning, assignment, journey status, and planning targets.
             </div>
             <div className="space-y-11">
               {sections.map((section, index) => (
@@ -72,9 +72,11 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
         <div className="mx-auto flex max-w-[1040px] flex-wrap items-center gap-x-5 gap-y-2 px-5 py-7 text-xs leading-5 text-text-muted sm:px-7">
           <BrandMark compact />
           <span>© 2026 Anchora</span>
+          <span>Operated by Ajinkya Kale · Pyramid Urban Homes, Sector 67, Gurugram, Haryana 122018, India</span>
           <div className="flex-1" />
           <Link href="/privacy" className="link-hover-gold">Privacy</Link>
           <Link href="/terms" className="link-hover-gold">Terms</Link>
+          <Link href="/dpa" className="link-hover-gold">DPA</Link>
           <a href="mailto:hello@tryanchora.com" className="link-hover-gold">hello@tryanchora.com</a>
         </div>
       </footer>

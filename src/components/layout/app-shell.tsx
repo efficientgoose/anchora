@@ -4,7 +4,7 @@ import * as React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Clock3, Info, LogOut, Menu, Plus, Settings, UserRoundCog, Users } from "lucide-react";
+import { BarChart3, Clock3, LogOut, Menu, Plus, Settings, UserRoundCog, Users } from "lucide-react";
 import { BrandIcon, BrandMark } from "@/components/brand/brand-mark";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,9 @@ const navItems = [
 
 const SIDEBAR_STORAGE_KEY = "anchora-sidebar-collapsed";
 const SIDEBAR_CHANGE_EVENT = "anchora-sidebar-change";
+const LEGACY_PROTOTYPE_STORAGE_KEY = "anchora:prototype:v1";
 let sidebarFallback = false;
+let legacyPrototypeStateCleared = false;
 
 export interface WorkspaceActor {
   name: string;
@@ -143,13 +145,21 @@ function SidebarContent({ actor, collapsed = false, onToggle, onNavigate }: { ac
   );
 }
 
-export function AppShell({ actor, children, demoData = false }: { actor: WorkspaceActor; children: React.ReactNode; demoData?: boolean }) {
-  const pathname = usePathname();
+export function AppShell({ actor, children }: { actor: WorkspaceActor; children: React.ReactNode }) {
   const [mobileNavigationOpen, setMobileNavigationOpen] = React.useState(false);
   const collapsed = React.useSyncExternalStore(subscribeToSidebarPreference, readSidebarPreference, () => false);
   const toggleSidebar = React.useCallback(() => writeSidebarPreference(!collapsed), [collapsed]);
   const closeMobileNavigation = React.useCallback(() => setMobileNavigationOpen(false), []);
-  const showDemoDataNotice = demoData && (pathname.startsWith("/students") || pathname.startsWith("/intakes"));
+
+  React.useEffect(() => {
+    if (legacyPrototypeStateCleared) return;
+    legacyPrototypeStateCleared = true;
+    try {
+      window.localStorage.removeItem(LEGACY_PROTOTYPE_STORAGE_KEY);
+    } catch {
+      // Storage can be unavailable in hardened browser contexts.
+    }
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden bg-canvas">
@@ -161,14 +171,6 @@ export function AppShell({ actor, children, demoData = false }: { actor: Workspa
           <BrandMark href="/students" compact />
         </header>
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
-          {showDemoDataNotice && (
-            <div className="border-b border-accent-border bg-accent-soft/60 px-4 py-2.5 text-brand-gold-strong sm:px-6">
-              <div className="mx-auto flex max-w-[1440px] items-start gap-2 text-xs leading-5">
-                <Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-                <p>You’re viewing sample students. Changes are saved only in this browser during early access.</p>
-              </div>
-            </div>
-          )}
           {children}
         </main>
       </div>

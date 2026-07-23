@@ -4,7 +4,7 @@ Anchora supports Google sign-in, public email/password signup, mandatory email c
 
 The application uses Supabase SSR cookie sessions. Supabase Auth invokes the signed `send-email` Edge Function, which renders the Anchora React Email template and delivers it through Resend.
 
-Student records in this release remain synthetic and browser-local. Do not enter real student information until database tenancy, authorization policies, audit controls, and data-protection processes are implemented.
+New accounts open a blank consultancy workspace. Student records use organization-scoped Supabase tables and remain unavailable until the student-data migration, legal agreements, and server-only launch flag are ready. Keep `REAL_STUDENT_DATA_ENABLED=false` until every activation check in this guide passes.
 
 ## Production identities
 
@@ -67,6 +67,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://nvkimcimfzhirbayoggn.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 SUPABASE_SECRET_KEY=your_server_only_secret_key
+REAL_STUDENT_DATA_ENABLED=false
 ```
 
 In Vercel Production, configure:
@@ -76,9 +77,12 @@ NEXT_PUBLIC_SUPABASE_URL=https://nvkimcimfzhirbayoggn.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 NEXT_PUBLIC_SITE_URL=https://tryanchora.com
 SUPABASE_SECRET_KEY=your_server_only_secret_key
+REAL_STUDENT_DATA_ENABLED=false
 ```
 
 The Supabase publishable key is designed for public clients. The secret key powers owner-created consultant invitations and must exist only in trusted server environments. Never add a Supabase secret key or service-role key to a `NEXT_PUBLIC_` variable, browser code, logs, or screenshots.
+
+`REAL_STUDENT_DATA_ENABLED` is a server-only launch flag. Leave it set to `false` in local, Preview, and Production environments until the database migration and legal controls have been validated. Never expose it with a `NEXT_PUBLIC_` prefix. After activation, a value of exactly `true` enables the organization-scoped student workflow; missing or any other value fails closed.
 
 This project intentionally uses one Supabase project. Development and preview activity therefore affects the same authentication user list and rate limits as production. Production email links always return to `tryanchora.com`.
 
@@ -216,7 +220,7 @@ Users can choose **Continue with Google** from `/login` or `/signup`. A first-ti
 
 ### Public signup
 
-Users open `/signup`, provide their name, email, and password, then confirm the branded email. Confirmation establishes their session and opens `/students`.
+Users open `/signup`, provide their name, email, and password, then confirm the branded email. Confirmation establishes their session and opens a blank `/students` workspace. The student-data launch flag and required legal agreements still control whether a user can create or view student records.
 
 ### Consultancy invitation
 
@@ -228,7 +232,28 @@ Do not use **Authentication > Users > Invite user** for consultancy access. Dash
 
 Administrators may still create a confirmed user with a password directly in Supabase. That user can sign in immediately and create a new owner consultancy through onboarding; it does not add the user to an existing consultancy. `full_name` can be stored in user metadata for display, but user metadata must never be used to grant authorization.
 
-## 10. Deployment checkpoints
+## 10. Activate organization-scoped student data
+
+Do not enable real student data as part of an authentication-only rollout.
+
+1. Authenticate and link the Supabase CLI:
+
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref nvkimcimfzhirbayoggn
+   ```
+
+2. Review and apply `supabase/migrations/20260723154123_student_onboarding_foundation.sql` using the linked Supabase workflow.
+3. Confirm the migration installs the versioned Germany journey template, row-level-security policies, legal-acceptance gates, audit records, and the scheduled 90-day archived-student erasure job.
+4. Confirm the `pg_cron` extension and daily erasure schedule exist in the hosted project. The migration intentionally fails instead of silently omitting retention automation when scheduling is unavailable.
+5. Have the owner review the public Privacy Policy, Terms of Use, and DPA. Accept the individual documents, then accept the organization DPA as the owner.
+6. Keep the application deployed with `REAL_STUDENT_DATA_ENABLED=false` while completing the checks above.
+7. Set `REAL_STUDENT_DATA_ENABLED=true` only in the environment being activated, redeploy, and create one controlled adult India-to-Germany test record.
+8. Confirm the new record receives the six-stage Germany journey, that organization boundaries hold, and that no student fields appear in application logs.
+
+The first enabled workspace is intentionally blank. Add students through **Add student**; do not import or restore the retired browser-local prototype data.
+
+## 11. Deployment checkpoints
 
 Deploy and observe one checkpoint before moving to the next:
 
@@ -263,4 +288,8 @@ If the Send Email Hook fails, disable public signup and recovery entry points, d
 - Create a confirmed password user directly in Supabase and sign in normally.
 - Test authentication emails on desktop and mobile with images enabled and disabled.
 - Verify replies to authentication emails reach the Cloudflare forwarding destination.
-- Confirm only synthetic student data is present before sharing access.
+- Confirm a new account opens a blank student workspace with no browser-seeded profiles.
+- Confirm `REAL_STUDENT_DATA_ENABLED=false` hides student creation and records before activation.
+- Confirm the student migration, legal acceptance flow, organization DPA, RLS policies, and scheduled erasure job before setting `REAL_STUDENT_DATA_ENABLED=true`.
+- Create one controlled adult India-to-Germany student and confirm the Germany journey is generated automatically.
+- Confirm student names, email addresses, phone numbers, and exported records do not appear in application logs.
