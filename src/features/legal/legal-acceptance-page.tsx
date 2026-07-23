@@ -47,12 +47,11 @@ export function IndividualLegalAcceptancePage({ documentVersion, nextPath }: { d
     <AuthShell
       eyebrow="Required before student data"
       title="Review the operating terms"
-      description="Every workspace user accepts the Terms of Use and acknowledges the Privacy Policy before working with limited student information."
       footer={<span>Need the organization agreement? The workspace owner completes the <Link href={`/legal/dpa?next=${encodeURIComponent(nextPath)}`} className="link-hover-gold font-semibold text-text-primary underline decoration-border-strong underline-offset-4">DPA acceptance</Link>.</span>}
     >
       <div className="mb-5 flex items-start gap-3 rounded-card border border-accent-border bg-accent-soft/55 p-4 text-sm leading-[22px] text-brand-gold-strong">
         <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-        <span>Student data is limited to adult India-to-Germany applicant planning. Do not enter documents or unrelated sensitive information.</span>
+        <span>Only enter information related to adult applicants and Anchora&apos;s supported study-abroad workflows. Do not upload documents or enter unrelated sensitive information.</span>
       </div>
       <FormStatus status={state.status} />
       <form action={formAction} className="space-y-3">
