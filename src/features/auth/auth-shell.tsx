@@ -10,7 +10,7 @@ const journey = [
   { label: "Visa & arrival", detail: "Planned", icon: Plane },
 ];
 
-export function AuthShell({ eyebrow, title, description, children, footer }: { eyebrow: string; title: string; description: string; children: ReactNode; footer?: ReactNode }) {
+export function AuthShell({ eyebrow, title, description, children, footer }: { eyebrow: string; title: string; description?: string; children: ReactNode; footer?: ReactNode }) {
   return (
     <main className="grid min-h-screen grid-cols-[minmax(0,1fr)] bg-canvas lg:grid-cols-[minmax(0,1fr)_minmax(500px,.9fr)]">
       <section className="relative flex min-w-0 items-center justify-center bg-surface px-5 py-12 sm:px-8 lg:py-16">
@@ -19,7 +19,7 @@ export function AuthShell({ eyebrow, title, description, children, footer }: { e
           <BrandMark className="mb-9" />
           <div className="type-micro text-brand-gold-strong">{eyebrow}</div>
           <h1 className="mt-2 text-[30px] font-bold leading-[1.18] tracking-[-.035em] text-brand-ink">{title}</h1>
-          <p className="mt-2 max-w-[390px] text-sm leading-[22px] text-text-muted">{description}</p>
+          {description && <p className="mt-2 max-w-[390px] text-sm leading-[22px] text-text-muted">{description}</p>}
           <div className="mt-7">{children}</div>
           {footer && <div className="mt-7 border-t border-border-subtle pt-5 text-center text-[13px] leading-5 text-text-muted">{footer}</div>}
           <nav aria-label="Legal" className="mt-4 flex items-center justify-center gap-4 text-[11px] leading-5 text-text-muted">
